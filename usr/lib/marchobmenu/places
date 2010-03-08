@@ -1,0 +1,72 @@
+#!/bin/bash
+# Recursively browse filesystem through openbox3 pipe menus
+# This script is a rewrite in Bash of Kacper Wysocki's obpipemenu-places for Crunchbang Linux
+#### Usage: add
+# <menu id="browse" label="Browse" execute="obpipemenu-places ~" />
+# to your .config/openbox/menu.xml
+# or
+# <menu id="browse" label="Browse" execute="obpipemenu-places ~ myFileManager" />
+# if you want to use another filemanager than PcManFM
+
+MYSELF="$0"
+
+BASEDIR="$1"
+if [ -z "$1" ]; then
+{
+  BASEDIR="$HOME"
+}
+fi
+
+FILE_MANAGER="$2"
+if [ -z "$2" ]; then
+{
+  FILE_MANAGER="pcmanfm"
+}
+fi
+
+
+echo "<openbox_pipe_menu>"
+
+# "Browse here..." lauches this dir
+echo "<item label=\"Browse here..\">
+  <action name=\"Execute\">
+    <execute>$FILE_MANAGER '$BASEDIR'</execute>
+  </action>
+</item>
+<separator />"
+
+
+ls "$BASEDIR" | while read filename; do
+{
+  # Directory
+  if [ -d "$BASEDIR/$filename" ]; then
+  {
+    # echo "$line is a directory"
+    filename=`echo "$filename" | sed -e 's/&/&amp;/' -e 's/ /\\ /g'`
+    dirname=`echo "$BASEDIR" | sed -e 's/&/&amp;/g' -e 's/ /\\ /g'`
+    echo "<menu id=\"$dirname/$filename\" label=\"$filename\" execute=\"$MYSELF '$dirname/$filename' $FILE_MANAGER\" />"
+  }
+  # File
+  elif [ -f "$BASEDIR/$filename" ]; then
+  {
+    filename=`echo "$filename" | sed -e 's/&/&amp;/g'`
+    dirname=`echo "$BASEDIR" | sed -e 's/&/&amp;/g'`
+    echo "<item label=\"$filename\">
+  <action name=\"Execute\">
+    <execute>$FILE_MANAGER '$dirname/$filename'</execute>
+  </action>
+</item>"
+  }
+  # SymLink
+  elif [ -L "$BASEDIR/$filename" ]; then
+  {
+    filename=`echo "$filename" | sed -e 's/&/&amp;/g'`
+    dirname=`echo "$BASEDIR" | sed -e 's/&/&amp;/g'`
+    echo "<menu id=\"$dirname/$filename\" label=\"$filename\" execute=\"$MYSELF '$dirname/$filename' $FILE_MANAGER\" />"
+  }
+  fi
+  
+}
+done
+
+echo "</openbox_pipe_menu>";

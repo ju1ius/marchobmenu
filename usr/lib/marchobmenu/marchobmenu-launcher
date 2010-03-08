@@ -1,0 +1,186 @@
+#!/bin/bash
+
+echo "============================> $0"
+
+#############################################
+#		VARIABLES
+#--------------------------------------------
+#
+#echo "Exporting variables"
+
+# Get current working directory
+export wdir="$HOME/.config/openbox/marchobmenu"
+
+# Get application directory
+export appdir=/usr/lib/marchobmenu
+
+# Monitored directory
+export trigdir=$wdir/triggers
+
+# Working lock marker
+export usrlock=$wdir/lock
+
+# Root lock
+export rootlock=/tmp/rootlock
+
+# Get user name
+export usrname=`whoami`
+
+# Define language
+export long_locale=`echo $LANG | cut  -d '.' -f1`
+export short_locale=`echo $LANG | cut -c-2`
+export default_locale='en'
+
+if [ -f $appdir/locale/$long_locale ]; then
+{
+  export lang="$long_locale"
+}
+else
+{
+  if [ -f $appdir/locale/$langalt ]; then
+  {
+    export lang="$short_locale"
+  }
+  else
+  {
+    export lang="$default_locale"
+  }
+  fi
+}
+fi
+
+
+
+#Other variables defined in the scripts are $name, $command, $iconname, $iconloc, $category, $submenu
+#
+#		/VARIABLES
+#############################################
+
+#############################################
+#		CHECKS
+#--------------------------------------------
+#
+echo "Starting marchobmenu-launcher"
+
+#Kill running sessions of the user daemon
+killall marchobmenu-userdaemon
+
+ps -eo pid,user,args --sort pid | \
+grep "inotifywait -q -m -r --format %f -e create $trigdir" | \
+sed -e '/grep/d' | \
+while read line; do
+{
+	if [ ! -z "$line" ]; then
+	{
+	  echo "daemon found $line"
+		pid=`echo $line | cut -d ' ' -f1`
+    echo "killing $pid"
+		kill $pid
+	}
+	fi
+}
+done
+
+#remove lock
+if [ -f $usrlock ]; then
+{
+  echo "Removing user lock $usrlock"
+  rm $usrlock
+}
+fi
+
+
+#check for default folders
+if [ -d $wdir/submenus ]; then
+{
+  sleep 0
+}
+else
+{
+  mkdir -p $wdir/submenus
+}
+fi
+
+if [ -d $trigdir ]; then
+{
+  sleep 0
+}
+else
+{
+  mkdir $trigdir 
+}
+fi
+
+#
+#		/CHECKS
+#############################################
+
+
+#############################################
+#	START marchobmenu
+#--------------------------------------------
+#
+
+# check if $wdir/submenus is empty
+submenu_files=`ls $wdir/submenus`
+if [ "$submenu_files" ]; then
+{
+  # no, so ...
+  #	CHECK FOR PENDING UPDATES
+  echo "Check for pending updates ..."
+  trigger_files=`ls $trigdir`
+  if [ "$trigger_files" ]; then
+  {
+    ls $trigdir | while read line; do
+	  {
+      cat $trigdir/$line
+      # Assign change to variable
+      list=`cat $trigdir/$line`
+
+      #Run updater
+      echo "Updating $trigdir/$line $list..."
+      $appdir/./update $list
+
+      echo "Done"
+      rm $trigdir/$line
+	  }		
+	  done 
+  }
+  fi
+  #	/CHECK FOR PENDING UPDATES
+  
+  $appdir/./marchobmenu-userdaemon &
+  
+}    
+else
+{
+  # $wdir/submenus is empty, so
+  #	GENERATE NEW MENU
+  function generate()
+  {
+	  echo 0	
+	  # Run the main script
+	  $appdir/./main
+	  echo 50
+	  
+	  # Run the rootgen script
+	  $appdir/./rootgen $lang
+	  echo 100
+  }
+  
+  gentext=`sed '11!d' $appdir/locale/$lang`
+
+  #/get text to display in zenity
+
+  generate | zenity --progress --title="marchobmenu" --text="$gentext" --percentage=0 --auto-close
+
+  #	/GENERATE NEW MENU
+  $appdir/./marchobmenu-userdaemon &
+  
+}
+fi
+#
+#	/START marchobmenu
+#############################################
+
+exit

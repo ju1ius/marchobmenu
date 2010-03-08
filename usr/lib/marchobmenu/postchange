@@ -1,0 +1,56 @@
+#!/bin/bash
+
+echo "============================> $0"
+
+#echo $1 $2
+
+echo "Ignoring temporary file $2"
+if [ `echo $2 | grep .dpkg-tmp` ]; then
+{
+	exit
+}
+fi
+
+#remove .dpkg-new extension
+if [ `echo $2 | grep .dpkg-new` ]; then
+{
+	edited=`echo "$2" |  cut -d '.'  -f1,2`
+}
+else
+{
+	edited="$2"
+}
+fi
+
+#create variable for trigger file name
+trigger=`echo ${edited##*/}`
+#echo "trigger name is $trigger"
+
+if [ "$1" = 'CREATE' ]; then
+{
+  # the loop below pipes the output of the file into a variable ($line) line by line
+  ls /home | sed '/Music/ d
+  /lost+found/ d' | cat | while read line; do
+  {  
+    #placeholder command to make sure everything is groovy
+    echo "$1 $edited" > /home/$line/.config/openbox/marchobmenu/triggers/"$trigger"
+    chown $line:$line /home/$line/.config/openbox/marchobmenu/triggers/"$trigger"
+  }
+  done
+}
+fi
+
+if [ "$1" = 'DELETE' ]; then
+{
+  # the loop below pipes the output of the file into a variable ($line) line by line
+  ls /home | sed '/Music/ d
+  /lost+found/ d' | cat | while read line; do
+  {
+    #placeholder command to make sure everything is groovy
+    echo "$1 $2" > /home/$line/.config/openbox/marchobmenu/triggers/"$trigger"
+    chown $line:$line /home/$line/.config/openbox/marchobmenu/triggers/"$trigger"
+  }
+  done
+}
+fi
+

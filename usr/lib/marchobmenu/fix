@@ -1,0 +1,89 @@
+#!/bin/bash
+echo "Running fix"
+#############################################
+#		ACCESSORIES
+#--------------------------------------------
+sed -e '
+s/{catfish}/{catfish --path=$HOME}/g' $wdir/submenus/Accessories > /tmp/"$usrname"AccessoriesFix
+cat /tmp/"$usrname"AccessoriesFix > $wdir/submenus/Accessories
+rm /tmp/"$usrname"AccessoriesFix
+#		/ACCESSORIES
+#############################################
+
+#############################################
+#		GAMES
+#--------------------------------------------
+
+#		/GAMES
+#############################################
+
+#############################################
+#		GRAPHICS
+#--------------------------------------------
+sed -e 's/{f-spot}/{dbus-launch f-spot}/g' $wdir/submenus/Graphics > /tmp/"$usrname"GraphicsFix
+cat /tmp/"$usrname"GraphicsFix > $wdir/submenus/Graphics
+rm /tmp/"$usrname"GraphicsFix
+#		/GRAPHICS
+#############################################
+
+#############################################
+#		INTERNET
+#--------------------------------------------
+sed -e '
+/(Sun Java 6 Web Start)/d' $wdir/submenus/Internet > /tmp/"$usrname"InternetFix
+cat /tmp/"$usrname"InternetFix > $wdir/submenus/Internet
+rm /tmp/"$usrname"InternetFix
+#		/INTERNET
+#############################################
+
+#############################################
+#		OFFICE
+#--------------------------------------------
+
+#		/OFFICE
+#############################################
+
+#############################################
+#		OTHERS
+#--------------------------------------------
+sed -e 's/{xdg-open .wine\/dosdevices\/c:}/{thunar ~\/.wine\/dosdevices\/c\\:}/g
+/\/screensavers\//d' $wdir/submenus/Others > /tmp/"$usrname"OthersFix
+cat /tmp/"$usrname"OthersFix > $wdir/submenus/Others
+rm /tmp/"$usrname"OthersFix
+#		/OTHERS
+#############################################
+
+#############################################
+#		PROGRAMMING
+#--------------------------------------------
+
+#		/PROGRAMMING
+#############################################
+
+#############################################
+#		SOUND & VIDEO
+#--------------------------------------------
+sed -e 's/{gmplayer -msglevel all}/{gmplayer -msglevel all=0}/g' $wdir/submenus/Multimedia > /tmp/"$usrname"MultimediaFix
+cat /tmp/"$usrname"MultimediaFix > $wdir/submenus/Multimedia
+rm /tmp/"$usrname"MultimediaFix
+#		/SOUND & VIDEO
+#############################################
+
+#############################################
+#		SYSTEM TOOLS
+#--------------------------------------------
+sed -e '
+s/(Xfce 4 /(/g
+s/{\/usr\/sbin\/gdmsetup}/{gksu \/usr\/sbin\/gdmsetup}/g
+s/{catfish}/{catfish --path=$HOME}/g
+s/{envyng -t}/{xterm -e "envyng -t"}/g
+/{xfce4-panel -c}/d
+/(Screensaver Settings)/d
+/(XScreenSaver Setup)/d
+/{vino-preferences}/d' $wdir/submenus/System > /tmp/"$usrname"SystemFix
+cat /tmp/"$usrname"SystemFix > $wdir/submenus/System
+rm /tmp/"$usrname"SystemFix
+#		/SYSTEM TOOLS
+#############################################
+
+exit

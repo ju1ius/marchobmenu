@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+echo "============================> $0"
+
+## Get current working directory
+#export wdir="$HOME/.config/openbox/marchobmenu"
+
+## Get application directory
+#export appdir=/home/ju1ius/bin/openbox/src/ob
+
+#export lang="fr_FR"
+#export langalt="fr"
+
+#############################################
+#		DEFAULT FILES
+#		& DIRECTORIES
+#--------------------------------------------
+#
+#Create submenu directory
+if [ ! -d "$wdir/submenus" ]; then
+{
+  mkdir -p "$wdir/submenus"
+}
+fi
+#
+#############################################
+
+#Run mk-lists to create required lists of .desktop files
+$appdir/mk-lists
+
+#############################################
+#		PARSER
+#--------------------------------------------
+#Assign active list of .desktop files to variable
+list=`cat $wdir/active-list`
+
+#Delete existing submenus
+if [ -f "$wdir/submenus/*" ]; then
+{
+  rm "$wdir/submenus/*"
+}
+fi
+
+#Run parser to parse .desktop file one by one
+$appdir/parser $list
+#		/PARSER
+#############################################
+
+#############################################
+#		SORTING
+#--------------------------------------------
+#Assign list of submenus to be sorted to variable
+sortqueue=`cat $wdir/sortqueue`
+
+#Run sorter to sort submenus
+$appdir/sorter $sortqueue
+#		/SORTING
+#############################################
+
+#Debug
+#echo $list

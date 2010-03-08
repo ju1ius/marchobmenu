@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#############################################
+#		SORTING LOOP
+#--------------------------------------------
+#Start sorting loop
+while [ ! -z "$1" ]
+do
+	cat $wdir/submenus/$1 | sort -f -d -u > $wdir/submenus/$1.temp
+	rm $wdir/submenus/$1
+	mv $wdir/submenus/$1.temp $wdir/submenus/$1
+shift
+done
+#		/SORTING LOOP
+#############################################
+
+#Delete the sortqueue
+rm $wdir/sortqueue

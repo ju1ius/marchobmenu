@@ -1,0 +1,197 @@
+#!/bin/bash
+
+echo "============================> $0"
+
+#Create submenu directory
+if [ ! -d "$wdir/submenus" ]; then
+{
+	mkdir "$wdir/submenus"
+}
+fi
+
+#############################################
+#		PARSING LOOP
+#--------------------------------------------
+
+echo "Starting parsing loop"
+while [ ! -z "$1" ]; do
+{
+  echo $1
+
+  #load file to be parsed into variable
+  parsee=`cat $1`
+
+  #Check if NoDisplay is true and skip if true
+	if [ `echo "$parsee" | grep NoDisplay | cut -d '=' -f2` ]; then
+	{
+	  shift
+		continue
+	}
+	fi
+
+  # NAME----------------------------------------
+  # Search for Name in correct language according to $LANG
+  
+	name=`echo "$parsee" | grep -m 1 "^Name\[$long_locale\]" | cut -d '=' -f2`
+
+  # Search for Name in correct language but for different country
+	if [ -z "$name" ]; then
+	{
+	  name=`echo "$parsee" | grep -m 1 "^Name\[$short_locale" | cut -d '=' -f2`
+	}
+	fi
+
+  # Set Name to Default
+	if [ -z "$name" ]; then
+	{
+	  name=`echo "$parsee" | grep -m 1 "^Name=" | cut -d '=' -f2`
+	}
+	fi
+
+  # /NAME---------------------------------------
+
+  # COMMAND-------------------------------------
+  # Retrieve the required command to run
+  
+	command=`echo "$parsee" | grep -m 1 "Exec=" | cut -d '=' -f2 | sed -e 's/%f//; s/%F//; s/%u//; s/%U//'`
+
+  # /COMMAND------------------------------------
+
+  # CATEGORY------------------------------------
+  # Retrieve category list from .desktop
+  
+	category=`echo "$parsee" | grep -m 1 "Categories=" | cut -d '=' -f2`
+
+  # Assign categories to submenus
+
+  # System
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "System\|AdvancedSettings\|PackageManager\|hardware"` ]
+		then
+			submenu="System"
+		fi
+	fi
+	
+	# Preferences
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Settings\|HardwareSettings\|Appearance\|settings"` ]
+		then
+			submenu="Preferences"
+		fi
+	fi
+
+  # Internet
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Network\|Email\|News\|FileTransfer\|P2P"` ]
+		then 
+			submenu="Internet"
+		fi
+	fi
+
+  # Multimedia
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "AudioVideo\|Video\|Player\|Audio\|Music"` ]
+		then 
+			submenu="Multimedia"
+		fi
+	fi
+
+  # Office
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "WordProcessor\|Office\|Spreadsheet"` ]
+		then 
+			submenu="Office"
+		fi
+	fi
+
+  # Games
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Game"` ]
+		then 
+			submenu="Games"
+		fi
+	fi
+
+  # Graphics
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Graphics\|Photography\|Viewer\|VectorGraphics"` ]
+		then 
+			submenu="Graphics"
+		fi
+	fi
+
+  # Accessories
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Utility\|FileManager\|TerminalEmulator\|DesktopSettings\|Core\|TextEditor"` ]
+		then 
+			submenu="Accessories"
+		fi
+	fi
+
+  # Programming
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Development\|GUIDesigner"` ]
+		then 
+			submenu="Programming"
+		fi
+	fi
+	
+	# Programming
+	if [ -z "$submenu" ]
+	then
+		if [ `echo $category | grep "Wine"` ]
+		then 
+			submenu="Wine"
+		fi
+	fi
+
+  # Others
+	if [ -z "$submenu" ]
+	then
+		submenu="Others"
+	fi
+	
+  # /CATEGORY-----------------------------------
+  
+  # ENCODE XML ENTITIES-------------------------
+  name=`echo $name | sed -e 's/\&/&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'`
+  # /ENCODE XML ENTITIES------------------------
+
+  # OUTPUT--------------------------------------
+  # Ouput menu entry to submenu file
+  # each entry written on only one line to be grep'able
+  echo "  <item label=\"$name\" id=\"$1\"><action name=\"Execute\"><execute>$command</execute></action></item>" \
+      >> "$wdir/submenus/$submenu"
+  # Added submenu file to sortqueue.new
+  echo $submenu >> $wdir/sortqueue.new
+
+  # /OUTPUT-------------------------------------	
+
+  # Reset value of submenu
+	submenu=
+	
+	shift
+	
+}
+done
+#		/PARSING LOOP
+#############################################
+
+#Fix known broken entries
+#echo"now starting $appdir/./fix"
+#$appdir/./fix
+
+# Remove duplicates in sortqueue
+sort $wdir/sortqueue.new -u > $wdir/sortqueue
+rm $wdir/sortqueue.new
+
+exit

@@ -1,0 +1,58 @@
+Installing from source
+======================
+
+Debian systems
+--------------
+copy the "marchobmenu/usr/lib/marchobmenu" directory to your "/usr/lib directory"
+$ sudo cp -R marchobmenu/usr/lib/marchobmenu /usr/lib
+
+copy the "marchobmenu/etc/init.d/marchobmenu" file to your "/etc/init.d directory"
+$ sudo cp marchobmenu/etc/init.d/marchobmenu /etc/init.d
+
+symlink "marchobmenu/etc/init.d/marchobmenu" to /etc/rcS.d/S56marchobmenu
+$ sudo ln -s /etc/init.d/marchobmenu /etc/rcS.d/S56marchobmenu
+
+start the daemon
+$ sudo /etc/init.d/marchobmenu start
+
+add the following line to your ~/.config/openbox/autostart.sh file
+/usr/lib/marchobmenu/./marchobmenu-launcher &> /dev/null
+
+add the following line to your ~/.config/openbox/menu.xml file
+<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/applications" />
+
+You can also add the places menu.
+Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
+<menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/places ~ thunar"/>
+
+
+Installing from a package
+===========================
+
+Debian package
+--------------
+
+The root daemon should start right after installing the package. If it doesn't, you can start it manually with:
+$ sudo /etc/init.d/marchobmenu start
+
+After that, it will just start automatically at boot.
+
+You will have to launch the user daemon in your Openbox startup file (~/.config/openbox/autostart.sh).
+Simply add the following line at an appropriate place.
+
+/usr/lib/marchobmenu/./marchobmenu-launcher &> /dev/null
+
+
+The "Applications" menu is built by parsing the .desktop entries in /usr/share/applications
+to an xml file located in ~/.config/openbox/marchobmenu/applications.xml
+
+You can add it to your Openbox menu like this:
+<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/applications" />
+
+
+There is also a "Places" menu available that will allow you to browse your filesystem
+from your Openbox menu.
+<menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/places ~ thunar" />
+
+You can replace "~" by any directory you want as a starting point,
+and "thunar" by the file manager of your choice.

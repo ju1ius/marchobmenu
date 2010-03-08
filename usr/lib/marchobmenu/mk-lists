@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "============================> $0"
+
+#Generate full list of .desktop files
+find -L /usr/share/applications -wholename '*.desktop' -type f | \
+  sed '/\/screensavers\// d' | \
+  sort -f -d > $wdir/full-list
+
+#Generate active list to be used for menu generation (remove unwanted .desktop files)
+sed -e '
+/yelp.desktop/ d
+/sbt.desktop/ d
+/gnome-mplayer.desktop/ d
+/vino-preferences.desktop/ d
+/xfce4-panel-manager.desktop/ d
+/ooo-template.desktop/ d
+/synaptic-kde.desktop/ d
+/ndisgtk-kde.desktop/ d' $wdir/full-list > $wdir/active-list
+
+exit
