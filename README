@@ -13,7 +13,15 @@ Marchobmenu is written in bash and python and only requires the following packag
 - python-xdg
 
 There is also a "Places" menu available that will allow you to browse your filesystem from your Openbox menu.
-It is a python port of the "Places" script from Crunchbang Linux.
 
 See the INSTALL file for installing instructions.
+
+-----------------------------------------------------------------------
+Marchobmenu is heavily inspired by:
+- xdg-menu (http://cvs.fedoraproject.org/viewvc/devel/openbox/xdg-menu)
+- mint-fm2 (http://packages.linuxmint.com/pool/main/m/mint-fm2/)
+
+The "Places" script is a python port of
+Kacper Wysocki's obpipemenu-places for Crunchbang Linux.
+http://www.crunchbanglinux.org
 
