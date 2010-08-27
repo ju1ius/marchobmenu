@@ -54,16 +54,27 @@ def sorted_listdir(path):
 
 script_path = __file__
 
-if platform.system() == 'Windows':
-  open_cmd = "start"
-elif platform.system() == 'Darwin':
-  open_cmd = "open"
-else:
-  # assume Linux
-  open_cmd = "xdg-open"
-
 path = os.path.abspath(os.path.expanduser(sys.argv[1]))
 file_manager = sys.argv[2]
+
+if file_manager in ('exo-open', 'gnome-open'):
+  open_cmd = file_manager
+elif file_manager.lower() == 'thunar':
+  open_cmd = 'exo-open'
+elif file_manager.lower() == 'nautilus':
+  open_cmd = 'gnome-open'
+else:
+  if len(sys.argv) > 3:
+    open_cmd = sys.argv[3]
+  else:
+    open_cmd = 'xdg-open'
+
+#if os.path.isfile('/usr/bin/exo-open'):
+#  open_cmd = "exo-open"
+#elif os.path.isfile('/usr/bin/gnome-open'):
+#  open_cmd = "gnome-open"
+#else:
+#  open_cmd = "xdg-open"
 
 #files = os.listdir(path)
 #files.sort()
