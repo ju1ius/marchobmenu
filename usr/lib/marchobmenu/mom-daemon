@@ -136,8 +136,11 @@ case $ACTION in
   run)
     run
   ;;
+  update)
+    updateMenu
+  ;;
   *)
-    echo "Usage: $APP_DAEMON [start|stop|restart] [menu-name]"
+    echo "Usage: $APP_DAEMON [start|stop|update|run] [menu-name]"
   ;;
 esac
 #		/CASE
