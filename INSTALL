@@ -7,6 +7,10 @@ $ sudo cp -R marchobmenu/usr/lib/marchobmenu /usr/lib
 copy the "marchobmenu/etc/xdg/menus/mom-applications.menu" file to your "/etc/xdg/menus" directory
 $ sudo cp marchobmenu/etc/xdg/menus/mom-applications.menu /etc/xdg/menus
 
+start the daemon
+/usr/lib/marchobmenu/mom-daemon start
+
+If you want it to start automatically at login,
 add the following line to your ~/.config/openbox/autostart.sh file
 /usr/lib/marchobmenu/mom-daemon start &
 
@@ -27,6 +31,12 @@ Installing from a package
 Debian package
 --------------
 
+After installing the package:
+
+start the daemon
+/usr/lib/marchobmenu/mom-daemon start
+
+If you want it to start automatically at login,
 add the following line to your ~/.config/openbox/autostart.sh file
 /usr/lib/marchobmenu/mom-daemon start &
 
