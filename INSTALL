@@ -24,6 +24,7 @@ You can also add the places menu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
 <menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/mom-places.py ~ thunar"/>
 
+For more infos, see http://wiki.github.com/ju1ius/marchobmenu/
 
 Installing from a package
 ===========================
@@ -49,4 +50,6 @@ add the following line to your ~/.config/openbox/menu.xml file
 You can also add the places menu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
 <menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/mom-places.py ~ thunar"/>
+
+For more infos, see http://wiki.github.com/ju1ius/marchobmenu/
 
