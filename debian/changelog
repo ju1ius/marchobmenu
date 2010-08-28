@@ -1,6 +1,7 @@
 marchobmenu (1.3-1) stable; urgency=medium
 
   * Added dpkg-triggers support
+  * Removed the custom menu file feature
 
  -- Jules Bernable <julius@laforcemolle.org>  Fri, 28 Aug 2010 18:42:00 +0200
 

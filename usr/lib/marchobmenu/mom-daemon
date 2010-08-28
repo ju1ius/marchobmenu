@@ -1,8 +1,8 @@
 #! /bin/bash
 
+MENU_NAME="mom-applications"
 
 if [[ -n $1 ]] ; then ACTION=$1 ; else ACTION="usage" ; fi
-if [[ -n $2 ]] ; then MENU_NAME=$2 ; else MENU_NAME="mom-applications" ; fi
 
 set -e
 set -u

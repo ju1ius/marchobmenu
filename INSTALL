@@ -1,5 +1,45 @@
-Installing from source
-======================
+Debian systems
+==============
+
+If you're running a Debian based system or any distribution using apt and/or dpkg,
+then you really should install the deb package, as marchobmenu uses dpkg triggers
+to update the menu each time a package is installed/removed.
+If you install from source, you'll need to run the menu daemon.
+
+
+Installing from a package:
+===========================
+
+Debian package
+--------------
+
+After installing the package:
+
+add the following line to your ~/.config/openbox/menu.xml file
+<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
+
+You can also add the places menu.
+Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
+<menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/mom-places.py ~ thunar"/>
+
+
+Other types of packages
+-----------------------
+
+start the daemon
+/usr/lib/marchobmenu/mom-daemon start
+
+If you want it to start automatically at login,
+add the following line to your ~/.config/openbox/autostart.sh file
+/usr/lib/marchobmenu/mom-daemon start &
+
+Then refer to the Debian package instructions
+
+For more infos, see http://wiki.github.com/ju1ius/marchobmenu/
+
+
+Installing from source:
+=======================
 
 copy the "marchobmenu/usr/lib/marchobmenu" directory to your "/usr/lib directory"
 $ sudo cp -R marchobmenu/usr/lib/marchobmenu /usr/lib
@@ -13,36 +53,6 @@ start the daemon
 If you want it to start automatically at login,
 add the following line to your ~/.config/openbox/autostart.sh file
 /usr/lib/marchobmenu/mom-daemon start &
-
-you can specify another menu file as a second parameter
-$ /usr/lib/marchobmenu/mom-daemon start my-custom-menu
-
-add the following line to your ~/.config/openbox/menu.xml file
-<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
-
-You can also add the places menu.
-Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
-<menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/mom-places.py ~ thunar"/>
-
-For more infos, see http://wiki.github.com/ju1ius/marchobmenu/
-
-Installing from a package
-===========================
-
-Debian package
---------------
-
-After installing the package:
-
-start the daemon
-/usr/lib/marchobmenu/mom-daemon start
-
-If you want it to start automatically at login,
-add the following line to your ~/.config/openbox/autostart.sh file
-/usr/lib/marchobmenu/mom-daemon start &
-
-you can specify another menu file as a second parameter
-$ /usr/lib/marchobmenu/mom-daemon start my-custom-menu
 
 add the following line to your ~/.config/openbox/menu.xml file
 <menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
