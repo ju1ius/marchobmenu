@@ -19,27 +19,13 @@ set -e
 
 
 case "$1" in
-    configure)
-      echo << _HELP
-************************************************
-
-This debian package will setup the marchobmenu
-daemon to monitor for changes.
-
-You should now start the daemon:
-$ /usr/lib/marchobmenu/mom-daemon start
-
-and add the following line in
-~/.config/openbox/autostart.sh
-in order to start it automatically at login:
-
-/usr/lib/marchobmenu/mom-daemon start &
-
-************************************************
-_HELP
+    # This is triggered by any installation of a desktop entry
+    triggered)
+      echo DEBUG: processing trigger "'$2'"
+      /usr/lib/marchobmenu/mom-daemon update
     ;;
 
-    abort-upgrade|abort-remove|abort-deconfigure)
+    configure|abort-upgrade|abort-remove|abort-deconfigure)
     ;;
 
     *)

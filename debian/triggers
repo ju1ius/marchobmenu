@@ -1,0 +1,9 @@
+interest /usr/share/applications
+interest /usr/share/desktop-directories
+interest /usr/local/share/applications
+interest /usr/local/share/desktop-directories
+interest $HOME/.local/share/applications
+interest $HOME/.local/share/desktop-directories
+interest /etc/xdg/menus/lxde-applications-merged
+interest $HOME/.config/menus/lxde-applications-merged
+
