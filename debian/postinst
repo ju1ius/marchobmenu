@@ -26,6 +26,7 @@ case "$1" in
     ;;
 
     configure|abort-upgrade|abort-remove|abort-deconfigure)
+      /usr/lib/marchobmenu/mom-daemon update
     ;;
 
     *)
