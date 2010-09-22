@@ -1,28 +1,14 @@
 #! /bin/bash
 
-MENU_NAME="mom-applications"
-
-if [[ -n $1 ]] ; then ACTION=$1 ; else ACTION="usage" ; fi
-
-set -e
 set -u
 
-#############################################
-#		MAIN VARIABLES
-#--------------------------------------------
-# Get proper paths and names
+################################################################################
+#		VARIABLES
+#-------------------------------------------------------------------------------
 APP_PATH=$(readlink -f $0)
 APP_DIR=$(dirname $APP_PATH)
 APP_DAEMON=$(basename $APP_PATH)
-
-MENU_FILE="/etc/xdg/menus/$MENU_NAME.menu"
-if [[ ! -f $MENU_FILE ]]
-then
-  echo ">>> Error: Menu file not found ! ($MENU_FILE)"
-  exit 1
-fi
-
-BUILD_CMD="$APP_DIR/mom.py $MENU_NAME"
+PID=$$
 
 WDIR="$HOME/.config/openbox/marchobmenu"
 if [[ ! -d $WDIR ]]
@@ -30,119 +16,223 @@ then
   mkdir -p $WDIR
 fi
 
-CACHE_FILE=$WDIR/cache
-
-# MONITORED DIRECTORIES
-# .directory files
-WATCHEDDIRS[0]="/usr/share/desktop-directories"
-WATCHEDDIRS[1]="/usr/local/share/desktop-directories"
-WATCHEDDIRS[2]="$HOME/.local/share/desktop-directories"
-# .desktop files
-WATCHEDDIRS[3]="/usr/share/applications"
-WATCHEDDIRS[4]="/usr/local/share/applications"
-WATCHEDDIRS[5]="$HOME/.local/share/applications"
-# LXDE Stuff
-WATCHEDDIRS[6]="/etc/xdg/menus/lxde-applications-merged"
-WATCHEDDIRS[7]="$HOME/.config/menus/lxde-applications-merged"
-
-#		/MAIN VARIABLES
-#############################################
-
-
-############################################
-#		EXTRA VARIABLES
-#--------------------------------------------
-# Define variables for daemon functions
-PID=$$
 PIDFILE="$WDIR/$APP_DAEMON.pid"
 LOGFILE="$WDIR/$APP_DAEMON.log"
-#		/EXTRA VARIABLES
-#############################################
 
-#############################################
-#		FUNCTIONS
-#--------------------------------------------
-trapFunct ()
-{
-  TOKILL=($(ps -C \
-    "inotifywait -q -m -r --format %e %w%f -e create -e delete -e move -e modify","$APP_DAEMON" \
-    -o pid= | grep -v -e "$PID" -e "^$"
-  ))
-  for i in ${TOKILL[@]}
+BUILD_CMD="$APP_DIR/mom.py"
+CACHE_FILE=$WDIR/cache
+
+PKG_NAME='marchobmenu'
+TRIGGERS_DB="/var/lib/dpkg/triggers/File"
+
+MONITORED=(
+  # .directory files
+  [0]="/usr/share/desktop-directories"
+  [1]="/usr/local/share/desktop-directories"
+  [2]="/home/*/.local/share/desktop-directories"
+  # .desktop files
+  [3]="/usr/share/applications"
+  [4]="/usr/local/share/applications"
+  [5]="/home/*/.local/share/applications"
+  # LXDE Stuff
+  [6]="/etc/xdg/menus/lxde-applications-merged"
+  [7]="/home/*/.config/menus/lxde-applications-merged"
+)
+
+WATCHED=$(for d in "${MONITORED[@]}"
   do
-    checkUser=$(ps -p $i -o user= | cat)
-    if [[ "$checkUser" = "$USER" && -n "$checkUser" ]]
-    then
-      kill -9 $i
-    fi
+    tmp=$(echo "$d" | sed s/*/$USER/ )
+    if [[ -d $tmp ]]; then echo "$tmp"; fi;
   done
-  if [[ -f "$PIDFILE" ]] ; then rm "$PIDFILE" ; fi
+)
+#-------------------------------------------------------------------------------
+#		/VARIABLES
+################################################################################
+
+
+
+################################################################################
+#		FUNCTIONS
+#-------------------------------------------------------------------------------
+# Listens to filesystem events and increment the event stack
+bigbrother()
+{
+  inotifywait -q -m -r --format '%e %w%f' -e create -e delete -e move -e modify $WATCHED | \
+  while read line
+  do
+    echo "Event: $line"
+    build_menu
+  done
 }
 
-updateMenu ()
+# Kill all processes with name $APP_DAEMON, belonging to $USER
+# and whose parent is init (pid=1)
+killemall()
+{
+  found=$(pgrep -u "$USER" -P 1 "$APP_DAEMON")
+  if [[ $found != "" ]]
+  then
+    echo "Killing pid: $found"
+    kill -- -$found
+  fi
+}
+
+# Called by the signal trap
+cleanup()
+{
+  killemall
+  echo "" > $PIDFILE
+}
+
+check_triggers()
+{
+  if grep $PKG_NAME $TRIGGERS_DB
+  then
+    cat << _ERROR
+  Uh oh...
+  It seems you have dpkg-triggers running for $PKG_NAME
+  You must disable them before starting the daemon.
+  Run:
+  $ $APP_PATH disable-triggers
+  Or:
+  $ $APP_PATH --help
+  if you want to know more about dpkg-triggers
+_ERROR
+    exit 1
+  fi
+}
+
+build_menu()
 {
   $BUILD_CMD > $CACHE_FILE
 }
 
-watchFunct ()
+#################################################
+# Public API
+#------------------------------------------------
+start()
 {
-  WATCH=$(for d in ${WATCHEDDIRS[@]}; do if [[ -d $d ]] ; then echo $d ; fi ; done)
-  inotifywait -q -m -r --format '%e %w%f' -e create -e delete -e move -e modify $WATCH \
-  | while read line
-  do
-    echo $line >> $LOGFILE
-    updateMenu
-  done
-}
-
-daemonStart ()
-{
-  trapFunct
-  updateMenu
-  nohup $0 run  >$LOGFILE 2>&1 &
+  check_triggers
+  killemall
+  build_menu
+  # setsid to allow killing all child processes with the parent
+  setsid nohup $0 run  >$LOGFILE 2>&1 &
   exec 3>&-
   exec 2>&-
   exec 1>&-
   exit 0
 }
 
-daemonStop ()
+stop()
 {
-  trapFunct
+  killemall
 }
 
-run ()
+run()
 {
-  trap "trapFunct; exit" INT TERM EXIT
+  trap "cleanup; exit" INT TERM EXIT
   echo $PID > $PIDFILE
-  watchFunct
+  bigbrother
   trap - INT TERM EXIT
 }
 
+disable_triggers()
+{
+  sudo sed -i -e "/$PKG_NAME$/d" $TRIGGERS_DB
+}
+
+enable_triggers()
+{
+  killemall
+  disable_triggers
+  for d in "${MONITORED[@]}"
+  do
+    echo "$d $PKG_NAME" | sudo tee -a $TRIGGERS_DB
+  done
+}
+
+synopsis()
+{
+cat << _USAGE
+$APP_DAEMON - monitors installed applications to generate a an Openbox PipeMenu
+
+Synopsis
+--------
+$APP_DAEMON help             - Prints the help message and exits
+$APP_DAEMON start            - Starts the menu daemon
+$APP_DAEMON stop             - Stops the menu daemon
+$APP_DAEMON update           - Regenerates the menu
+$APP_DAEMON add-triggers     - Add dpkg-triggers (see fxm-daemon help for more infos)
+$APP_DAEMON remove-triggers  - Remove dpkg-triggers (see fxm-daemon help for more infos)
+_USAGE
+}
+
+usage ()
+{
+  synopsis
+cat << _USAGE
+About dpkg-triggers:
+--------------------
+  dpkg-triggers are a Debian/Apt specific way to trigger actions
+  when a new package is installed/removed.
+  They allow MarchOBMenu to update the menu without the overhead
+  of running a daemon.
+
+  However, they only work with packages installed by apt or dpkg.
+  This is why they are not enabled by default.
+
+  If you wish to activate this feature, first stop the daemon:
+  $ $APP_PATH stop
+  Then execute:
+  $ $APP_PATH enable-triggers
+
+  From now on, if you install a program in a non-standard way,
+  like compiling from source, or a wine application,
+  you'll need to explicitly update the menu by executing:
+  $ $APP_PATH update
+
+  You can deactivate this feature later it by executing:
+  $ $APP_PATH disable-triggers
+_USAGE
+
+}
+#-------------------------------------------------------------------------------
 #		/FUNCTIONS
-#############################################
+################################################################################
 
-#############################################
-#		CASE
-#--------------------------------------------
 
-case $ACTION in
+
+
+################################################################################
+#		MAIN
+#-------------------------------------------------------------------------------
+case "$1" in
   start|restart)
-    daemonStart
+    start
   ;;
   stop)
-    daemonStop
+    stop
   ;;
   run)
     run
   ;;
   update)
-    updateMenu
+    build_menu
+  ;;
+  disable-triggers)
+    disable_triggers
+  ;;
+  enable-triggers)
+    enable_triggers
+  ;;
+  help)
+    usage
   ;;
   *)
-    echo "Usage: $APP_DAEMON [start|stop|update|run] [menu-name]"
+    synopsis
   ;;
 esac
-#		/CASE
-#############################################
+#-------------------------------------------------------------------------------
+#		/MAIN
+################################################################################
 

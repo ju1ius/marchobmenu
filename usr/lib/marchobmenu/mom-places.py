@@ -40,16 +40,16 @@ def sort_ci(inlist, minisort=True):
   return newlist
 
 
-def sorted_listdir(path):
+def sorted_listdir(path, show_files=True):
   """
   Returns the content of a directory by showing directories first
   and then files by ordering the names alphabetically
   """
   items = os.listdir(path)
   files = sort_ci([ d for d in items if os.path.isdir(os.path.join(path, d)) ])
-  files.extend(sort_ci([ f for f in items if os.path.isfile(os.path.join(path, f)) ]))
+  if show_files:
+    files.extend(sort_ci([ f for f in items if os.path.isfile(os.path.join(path, f)) ]))
   return files
-
 
 
 script_path = __file__
@@ -57,29 +57,43 @@ script_path = __file__
 path = os.path.abspath(os.path.expanduser(sys.argv[1]))
 file_manager = sys.argv[2]
 
-if file_manager in ('exo-open', 'gnome-open'):
-  open_cmd = file_manager
-elif file_manager.lower() == 'thunar':
-  open_cmd = 'exo-open'
-elif file_manager.lower() == 'nautilus':
-  open_cmd = 'gnome-open'
+# TODO: check if every file manager can actually
+# open files with their associated application...
+
+open_cmd = file_manager
+
+# ... or else we might need this...
+#open_commands = [
+    #'exo-open', 'kde-open', 'gvfs-open', 'gnome-open', 'xdg-open'        
+#]
+
+#if len(sys.argv) > 2:
+    #file_manager = sys.argv[2]
+    #if file_manager in open_commands:
+        #open_cmd = file_manager
+    #elif file_manager.lower() == 'thunar':
+        #open_cmd = 'exo-open'
+    #elif file_manager.lower() == 'nautilus':
+        #open_cmd = 'gnome-open'
+
+#if len(sys.argv) > 3:
+    #open_cmd = sys.argv[3]
+
+#if open_cmd is None:
+    #for cmd in open_commands:
+        #if os.path.isfile(os.path.join('/usr/bin', cmd)):
+            #open_cmd = cmd
+            #break;
+
+#if file_manager is None:
+    #file_manager = open_cmd
+
+if len(sys.argv) > 3 and sys.argv[3] in ['false', 'off', 'no']:
+    show_files = False
 else:
-  if len(sys.argv) > 3:
-    open_cmd = sys.argv[3]
-  else:
-    open_cmd = 'xdg-open'
+    show_files = True
 
-#if os.path.isfile('/usr/bin/exo-open'):
-#  open_cmd = "exo-open"
-#elif os.path.isfile('/usr/bin/gnome-open'):
-#  open_cmd = "gnome-open"
-#else:
-#  open_cmd = "xdg-open"
-
-#files = os.listdir(path)
-#files.sort()
-
-files = sorted_listdir(path)
+files = sorted_listdir(path, show_files)
 
 print '<openbox_pipe_menu>'
 

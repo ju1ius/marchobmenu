@@ -21,7 +21,8 @@ add the following line to your ~/.config/openbox/menu.xml file
 You can also add the places menu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
 <menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/mom-places.py ~ thunar"/>
-
+If you don't want files to show up in the menu:
+<menu label="Places" id="marchobmenu-places" execute="/usr/lib/marchobmenu/mom-places.py ~ thunar false"/>
 
 Other types of packages
 -----------------------
