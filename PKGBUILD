@@ -27,12 +27,17 @@ build() {
   fi
 
   msg "GIT checkout done or server timeout"
+
   msg "Starting make..."
+  cd "$srcdir/$_gitname/usr/lib/marchobmenu"
+  make || return 1
 
   cd "$srcdir/$_gitname"
 
   install -d -m755 "$pkgdir/usr/lib" || return 1
   cp -Rp "usr/lib/marchobmenu" "$pkgdir/usr/lib" || return 1
+  install -d m755 "$pkgdir/usr/bin" || return 1
+  cp -p "usr/bin/*" "$pkgdir/usr/bin"
   install -d -m755 "$pkgdir/etc/xdg/menus" || return 1
   cp -p "etc/xdg/menus/mom-applications.menu" "$pkgdir/etc/xdg/menus" || return 1
   install -d -m755 "$pkgdir/usr/share" || return 1
