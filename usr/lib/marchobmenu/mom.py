@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 
-import os, sys, re, ConfigParser
+import os, sys, re, ConfigParser, StringIO
 
 import xdg.Config, xdg.BaseDirectory, xdg.DesktopEntry, xdg.Menu, xdg.Exceptions
 
