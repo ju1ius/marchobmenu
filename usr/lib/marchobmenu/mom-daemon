@@ -20,7 +20,7 @@ PIDFILE="$WDIR/$APP_DAEMON.pid"
 LOGFILE="$WDIR/$APP_DAEMON.log"
 
 BUILD_CMD="$APP_DIR/mom.py"
-CACHE_FILE=$WDIR/cache
+CACHE_FILE=$WDIR/menu.cache
 
 PKG_NAME='marchobmenu'
 TRIGGERS_DB="/var/lib/dpkg/triggers/File"
@@ -57,7 +57,9 @@ WATCHED=$(for d in "${MONITORED[@]}"
 # Listens to filesystem events and increment the event stack
 bigbrother()
 {
-  inotifywait -q -m -r --format '%e %w%f' -e create -e delete -e move -e modify $WATCHED | \
+  inotifywait -q -m -r --format '%e %w%f' \
+    --exclude "$HOME/.local/share/applications/menu-xdg/.*" \
+    -e create -e delete -e move -e modify $WATCHED | \
   while read line
   do
     echo "Event: $line"
@@ -69,7 +71,7 @@ bigbrother()
 # and whose parent is init (pid=1)
 killemall()
 {
-  found=$(pgrep -u "$USER" -P 1 "$APP_DAEMON")
+  found=$(pgrep -u "$USER" "$APP_DAEMON")
   if [[ $found != "" ]]
   then
     echo "Killing pid: $found"
@@ -115,11 +117,7 @@ start()
   check_triggers
   killemall
   build_menu
-  # setsid to allow killing all child processes with the parent
-  setsid nohup $0 run  >$LOGFILE 2>&1 &
-  exec 3>&-
-  exec 2>&-
-  exec 1>&-
+  run
   exit 0
 }
 
@@ -130,10 +128,7 @@ stop()
 
 run()
 {
-  trap "cleanup; exit" INT TERM EXIT
-  echo $PID > $PIDFILE
   bigbrother
-  trap - INT TERM EXIT
 }
 
 disable_triggers()

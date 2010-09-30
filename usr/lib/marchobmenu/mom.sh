@@ -1,4 +1,4 @@
 #! /bin/bash
 
-cat $HOME/.config/openbox/marchobmenu/cache
+cat $HOME/.config/openbox/marchobmenu/menu.cache
 

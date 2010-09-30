@@ -46,9 +46,9 @@ def sorted_listdir(path, show_files=True):
   and then files by ordering the names alphabetically
   """
   items = os.listdir(path)
-  files = sort_ci([ d for d in items if os.path.isdir(os.path.join(path, d)) ])
+  files = sort_ci(d for d in items if os.path.isdir(os.path.join(path, d)))
   if show_files:
-    files.extend(sort_ci([ f for f in items if os.path.isfile(os.path.join(path, f)) ]))
+    files.extend(sort_ci(f for f in items if os.path.isfile(os.path.join(path, f))))
   return files
 
 

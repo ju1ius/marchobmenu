@@ -1,3 +1,14 @@
+marchobmenu (1.4-1) stable; urgency=medium
+
+  * mom-daemon: removed use of nohup as the daemon must exit with the openbox session
+  * mom-daemon: added exclude for ~/.local/share/applications/menu-xdg
+    it is used only by Debian-specific menu entries
+  * mom-daemon: changed the name of menu cache file
+  * mom-places: merged file_manager and open_command args as they behave the
+    same
+
+ -- Jules Bernable <julius@laforcemolle.org>  Thu, 30 Sep 2010 14:47:00 +0200
+
 marchobmenu (1.3-1) stable; urgency=medium
 
   * Added dpkg-triggers support
