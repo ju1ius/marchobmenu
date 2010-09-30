@@ -8,6 +8,7 @@ set -u
 APP_PATH=$(readlink -f $0)
 APP_DIR=$(dirname $APP_PATH)
 APP_DAEMON=$(basename $APP_PATH)
+APP_WATCH="$APP_DIR/mom-watch"
 PID=$$
 
 WDIR="$HOME/.config/openbox/marchobmenu"
@@ -16,11 +17,10 @@ then
   mkdir -p $WDIR
 fi
 
-PIDFILE="$WDIR/$APP_DAEMON.pid"
 LOGFILE="$WDIR/$APP_DAEMON.log"
 
 BUILD_CMD="$APP_DIR/mom.py"
-CACHE_FILE=$WDIR/menu.cache
+CACHE_FILE="$WDIR/menu.cache"
 
 PKG_NAME='marchobmenu'
 TRIGGERS_DB="/var/lib/dpkg/triggers/File"
@@ -54,38 +54,6 @@ WATCHED=$(for d in "${MONITORED[@]}"
 ################################################################################
 #		FUNCTIONS
 #-------------------------------------------------------------------------------
-# Listens to filesystem events and increment the event stack
-bigbrother()
-{
-  inotifywait -q -m -r --format '%e %w%f' \
-    --exclude "$HOME/.local/share/applications/menu-xdg/.*" \
-    -e create -e delete -e move -e modify $WATCHED | \
-  while read line
-  do
-    echo "Event: $line"
-    build_menu
-  done
-}
-
-# Kill all processes with name $APP_DAEMON, belonging to $USER
-# and whose parent is init (pid=1)
-killemall()
-{
-  found=$(pgrep -u "$USER" "$APP_DAEMON")
-  if [[ $found != "" ]]
-  then
-    echo "Killing pid: $found"
-    kill -- -$found
-  fi
-}
-
-# Called by the signal trap
-cleanup()
-{
-  killemall
-  echo "" > $PIDFILE
-}
-
 check_triggers()
 {
   if grep $PKG_NAME $TRIGGERS_DB
@@ -103,47 +71,55 @@ _ERROR
     exit 1
   fi
 }
-
-build_menu()
-{
-  $BUILD_CMD > $CACHE_FILE
-}
-
 #################################################
 # Public API
 #------------------------------------------------
 start()
 {
   check_triggers
-  killemall
-  build_menu
-  run
-  exit 0
+  stop
+  update
+  $APP_WATCH -d \
+    -e '/.local/share/applications/menu-xdg/' \
+    -c "$BUILD_CMD > $CACHE_FILE" \
+    $WATCHED > $LOGFILE
 }
 
 stop()
 {
-  killemall
+  pkill -u "$USER" mom-watch
 }
 
-run()
+update()
 {
-  bigbrother
+  $BUILD_CMD > $CACHE_FILE
 }
 
 disable_triggers()
 {
-  sudo sed -i -e "/$PKG_NAME$/d" $TRIGGERS_DB
+  if [[ -e $TRIGGERS_DB ]]
+  then
+    sudo sed -i -e "/$PKG_NAME$/d" $TRIGGERS_DB
+  else
+    echo "Your system doesn't support dpkg-triggers. Please use the daemon instead."
+    exit 1
+  fi
 }
 
 enable_triggers()
 {
-  killemall
-  disable_triggers
-  for d in "${MONITORED[@]}"
-  do
-    echo "$d $PKG_NAME" | sudo tee -a $TRIGGERS_DB
-  done
+  if [[ -e $TRIGGERS_DB ]]
+  then
+    stop
+    disable_triggers
+    for d in "${MONITORED[@]}"
+    do
+      echo "$d $PKG_NAME" | sudo tee -a $TRIGGERS_DB
+    done
+  else
+    echo "Your system doesn't support dpkg-triggers. Please use the daemon instead."
+    exit 1
+  fi
 }
 
 synopsis()
@@ -208,11 +184,8 @@ case "$1" in
   stop)
     stop
   ;;
-  run)
-    run
-  ;;
   update)
-    build_menu
+    update
   ;;
   disable-triggers)
     disable_triggers
