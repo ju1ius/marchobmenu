@@ -1,6 +1,6 @@
 marchobmenu (1.4-1) stable; urgency=medium
 
-  * mom-daemon: removed use of nohup as the daemon must exit with the openbox session
+  * mom-daemon: ported monitoring to C code
   * mom-daemon: added exclude for ~/.local/share/applications/menu-xdg
     it is used only by Debian-specific menu entries
   * mom-daemon: changed the name of menu cache file
