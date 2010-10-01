@@ -1,7 +1,6 @@
 # Compiled source #
 ###################
 *.pyc
-usr/lib/marchobmenu/mom-daemon
 
 # OS generated files #
 ######################
