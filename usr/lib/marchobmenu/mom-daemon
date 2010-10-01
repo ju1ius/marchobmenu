@@ -11,6 +11,10 @@ APP_DAEMON=$(basename $APP_PATH)
 APP_WATCH="$APP_DIR/mom-watch"
 PID=$$
 
+# Needed if script was called with sudo
+USER=$(who am i | sed 's/ .*//')
+HOME=/home/$USER
+
 WDIR="$HOME/.config/openbox/marchobmenu"
 if [[ ! -d $WDIR ]]
 then
@@ -74,10 +78,10 @@ start()
   check_triggers
   stop
   update
-
+  # Get watched directories for the current user
   WATCHED=$(for d in "${MONITORED[@]}"
   do
-    tmp=$(echo "$d" | sed s/*/$USER/ )
+    tmp=$(echo "$d" | sed "s/*/$USER/" )
     if [[ -d $tmp ]]; then echo "$tmp"; fi;
   done)
 
