@@ -13,7 +13,7 @@ SRC=usr/lib/marchobmenu/mom-watch.c
 mom-watch:
 	${CC} ${SRC} -o ${EXEC} ${LDFLAGS} ${CFLAGS}
 
-.PHONY: clean install
+.PHONY: clean install uninstall
 
 clean:
 	rm ${EXEC}
@@ -29,3 +29,10 @@ install:
 	install -m 0755 etc/marchobmenu/* ${sysconfdir}/marchobmenu
 	install -d ${prefix}/bin
 	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon ${prefix}/bin/mom-daemon
+
+uninstall:
+	-rm -rf ${prefix}/lib/marchobmenu
+	-rm -rf ${prefix}/share/desktop-directories/mom-*.directory
+	-rm -rf ${sysconfdir}/marchobmenu
+	-rm -f ${sysconfdir}/xdg/menus/mom-applications.menu
+	-rm -f ${prefix}/bin/mom-daemon

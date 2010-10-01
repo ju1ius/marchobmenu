@@ -16,7 +16,7 @@ Debian package
 After installing the package:
 
 add the following line to your ~/.config/openbox/menu.xml file
-<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
+<menu label="Applications" id="marchobmenu-applications" execute="mom-daemon show" />
 
 You can also add the places menu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
@@ -28,11 +28,11 @@ Other types of packages
 -----------------------
 
 start the daemon
-/usr/lib/marchobmenu/mom-daemon start
+$ mom-daemon start
 
 If you want it to start automatically at login,
 add the following line to your ~/.config/openbox/autostart.sh file
-/usr/lib/marchobmenu/mom-daemon start &
+$ mom-daemon start &
 
 Then refer to the Debian package instructions
 
@@ -42,21 +42,20 @@ For more infos, see http://wiki.github.com/ju1ius/marchobmenu/
 Installing from source:
 =======================
 
-copy the "marchobmenu/usr/lib/marchobmenu" directory to your "/usr/lib directory"
-$ sudo cp -R marchobmenu/usr/lib/marchobmenu /usr/lib
-
-copy the "marchobmenu/etc/xdg/menus/mom-applications.menu" file to your "/etc/xdg/menus" directory
-$ sudo cp marchobmenu/etc/xdg/menus/mom-applications.menu /etc/xdg/menus
+$ git clone git://github.com/ju1ius/marchobmenu.git
+$ cd marchobmenu
+$ make
+$ sudo make prefix=/usr sysconfdir=/etc install
 
 start the daemon
-/usr/lib/marchobmenu/mom-daemon start
+$ mom-daemon start
 
 If you want it to start automatically at login,
 add the following line to your ~/.config/openbox/autostart.sh file
-/usr/lib/marchobmenu/mom-daemon start &
+$ mom-daemon start &
 
 add the following line to your ~/.config/openbox/menu.xml file
-<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
+<menu label="Applications" id="marchobmenu-applications" execute="mom-daemon show" />
 
 You can also add the places menu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.

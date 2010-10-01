@@ -8,9 +8,9 @@ http://standards.freedesktop.org/menu-spec/latest/ar01s04.html
 
 
 Marchobmenu is written in bash and python and only requires the following packages:
-- openbox
-- inotify-tools
-- python-xdg
+* openbox
+* inotify-tools
+* python-xdg
 
 There is also a "Places" menu available that will allow you to browse your filesystem from your Openbox menu.
 
@@ -18,8 +18,8 @@ See the INSTALL file for installing instructions.
 
 -----------------------------------------------------------------------
 Marchobmenu is heavily inspired by:
-- xdg-menu (http://cvs.fedoraproject.org/viewvc/devel/openbox/xdg-menu)
-- mint-fm2 (http://packages.linuxmint.com/pool/main/m/mint-fm2/)
+* xdg-menu (http://cvs.fedoraproject.org/viewvc/devel/openbox/xdg-menu)
+* mint-fm2 (http://packages.linuxmint.com/pool/main/m/mint-fm2/)
 
 The "Places" script is a python port of
 Kacper Wysocki's obpipemenu-places for Crunchbang Linux.

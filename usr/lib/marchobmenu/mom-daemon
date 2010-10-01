@@ -39,12 +39,7 @@ MONITORED=(
   [7]="/home/*/.config/menus/lxde-applications-merged"
 )
 
-WATCHED=$(for d in "${MONITORED[@]}"
-  do
-    tmp=$(echo "$d" | sed s/*/$USER/ )
-    if [[ -d $tmp ]]; then echo "$tmp"; fi;
-  done
-)
+
 #-------------------------------------------------------------------------------
 #		/VARIABLES
 ################################################################################
@@ -79,6 +74,13 @@ start()
   check_triggers
   stop
   update
+
+  WATCHED=$(for d in "${MONITORED[@]}"
+  do
+    tmp=$(echo "$d" | sed s/*/$USER/ )
+    if [[ -d $tmp ]]; then echo "$tmp"; fi;
+  done)
+
   $APP_WATCH -d \
     -e '/.local/share/applications/menu-xdg/' \
     -c "$BUILD_CMD > $CACHE_FILE" \
@@ -93,6 +95,11 @@ stop()
 update()
 {
   $BUILD_CMD > $CACHE_FILE
+}
+
+show()
+{
+  cat $CACHE_FILE
 }
 
 disable_triggers()
@@ -186,6 +193,9 @@ case "$1" in
   ;;
   update)
     update
+  ;;
+  show)
+    show
   ;;
   disable-triggers)
     disable_triggers
