@@ -8,7 +8,7 @@ set -u
 APP_PATH=$(readlink -f $0)
 APP_DIR=$(dirname $APP_PATH)
 APP_DAEMON=$(basename $APP_PATH)
-APP_WATCH="$APP_DIR/mom-watch"
+
 PID=$$
 
 # Needed if script was called with sudo
@@ -22,6 +22,7 @@ then
 fi
 
 LOGFILE="$WDIR/$APP_DAEMON.log"
+PIDFILE="$WDIR/$APP_DAEMON.pid"
 
 BUILD_CMD="$APP_DIR/mom.py"
 CACHE_FILE="$WDIR/menu.cache"
@@ -42,7 +43,12 @@ MONITORED=(
   [6]="/etc/xdg/menus/lxde-applications-merged"
   [7]="/home/*/.config/menus/lxde-applications-merged"
 )
-
+# Get watched directories for the current user
+WATCHED=$(for d in "${MONITORED[@]}"
+do
+  tmp=$(echo "$d" | sed "s/*/$USER/" )
+  if [[ -d $tmp ]]; then echo "$tmp"; fi;
+done)
 
 #-------------------------------------------------------------------------------
 #		/VARIABLES
@@ -70,6 +76,23 @@ _ERROR
     exit 1
   fi
 }
+
+watch()
+{
+  inotifywait -qmr --format '%e %w%f' \
+    -e create -e delete -e move -e modify \
+    --exclude "/.local/share/applications/menu-xdg/" \
+    $WATCHED | while read line
+    do
+      echo $line >> $LOGFILE
+      update
+    done 
+}
+
+signal_handler()
+{
+  stop
+}
 #################################################
 # Public API
 #------------------------------------------------
@@ -77,23 +100,28 @@ start()
 {
   check_triggers
   stop
-  update
-  # Get watched directories for the current user
-  WATCHED=$(for d in "${MONITORED[@]}"
-  do
-    tmp=$(echo "$d" | sed "s/*/$USER/" )
-    if [[ -d $tmp ]]; then echo "$tmp"; fi;
-  done)
+  update  
+  nohup $0 run  >$LOGFILE 2>&1 &
+  exec 3>&-
+  exec 2>&-
+  exec 1>&-
+  exit 0
+}
 
-  $APP_WATCH -d \
-    -e '/.local/share/applications/menu-xdg/' \
-    -c "$BUILD_CMD > $CACHE_FILE" \
-    $WATCHED > $LOGFILE
+run ()
+{
+  trap "signal_handler; exit" INT TERM EXIT
+  echo $PID > $PIDFILE
+  watch
+  trap - INT TERM EXIT
 }
 
 stop()
 {
-  pkill -u "$USER" mom-watch
+  pkill -u "$USER" \
+    -f "inotifywait -qmr --format %e %w%f -e create -e delete -e move -e modify --exclude /.local/share/applications/menu-xdg/ $WATCHED"
+  pkill -u "$USER" -f "$APP_DAEMON"
+  if [[ -f "$PIDFILE" ]] ; then rm "$PIDFILE" ; fi  
 }
 
 update()
@@ -144,8 +172,8 @@ $APP_DAEMON help             - Prints the help message and exits
 $APP_DAEMON start            - Starts the menu daemon
 $APP_DAEMON stop             - Stops the menu daemon
 $APP_DAEMON update           - Regenerates the menu
-$APP_DAEMON add-triggers     - Add dpkg-triggers (see fxm-daemon help for more infos)
-$APP_DAEMON remove-triggers  - Remove dpkg-triggers (see fxm-daemon help for more infos)
+$APP_DAEMON add-triggers     - Add dpkg-triggers (see mom-daemon help for more infos)
+$APP_DAEMON remove-triggers  - Remove dpkg-triggers (see mom-daemon help for more infos)
 _USAGE
 }
 
@@ -191,6 +219,9 @@ _USAGE
 case "$1" in
   start|restart)
     start
+  ;;
+  run)
+    run
   ;;
   stop)
     stop
