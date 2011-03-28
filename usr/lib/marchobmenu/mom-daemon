@@ -43,12 +43,9 @@ MONITORED=(
   [6]="/etc/xdg/menus/lxde-applications-merged"
   [7]="/home/*/.config/menus/lxde-applications-merged"
 )
-# Get watched directories for the current user
-WATCHED=$(for d in "${MONITORED[@]}"
-do
-  tmp=$(echo "$d" | sed "s/*/$USER/" )
-  if [[ -d $tmp ]]; then echo "$tmp"; fi;
-done)
+EXCLUDED=(
+  [0]="/.local/share/applications/menu-xdg/"
+)
 
 #-------------------------------------------------------------------------------
 #		/VARIABLES
@@ -77,12 +74,28 @@ _ERROR
   fi
 }
 
+compute_watches()
+{
+  # Get watched directories for the current user
+  WATCHES=$(for d in "${MONITORED[@]}"
+  do
+    tmp=$(echo "$d" | sed "s/*/$USER/" )
+    if [[ -d $tmp ]]; then echo "$tmp"; fi;
+  done)
+  # Get excludes patterns
+  EXCLUDES=$(for pattern in "${EXCLUDED[@]}"
+  do
+    echo "--exclude $pattern "
+  done)
+}
+
 watch()
 {
+  compute_watches
   inotifywait -qmr --format '%e %w%f' \
     -e create -e delete -e move -e modify \
-    --exclude "/.local/share/applications/menu-xdg/" \
-    $WATCHED | while read line
+    $EXCLUDES \
+    $WATCHES | while read line
     do
       echo $line >> $LOGFILE
       update
@@ -108,7 +121,7 @@ start()
   exit 0
 }
 
-run ()
+run()
 {
   trap "signal_handler; exit" INT TERM EXIT
   echo $PID > $PIDFILE
@@ -118,8 +131,9 @@ run ()
 
 stop()
 {
+  compute_watches
   pkill -u "$USER" \
-    -f "inotifywait -qmr --format %e %w%f -e create -e delete -e move -e modify --exclude /.local/share/applications/menu-xdg/ $WATCHED"
+    -f "inotifywait -qmr --format %e %w%f -e create -e delete -e move -e modify $EXCLUDES $WATCHED"
   pkill -u "$USER" -f "$APP_DAEMON"
   if [[ -f "$PIDFILE" ]] ; then rm "$PIDFILE" ; fi  
 }
