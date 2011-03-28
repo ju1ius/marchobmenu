@@ -42,7 +42,9 @@ MONITORED=(
   [6]="/etc/xdg/menus/lxde-applications-merged"
   [7]="/home/*/.config/menus/lxde-applications-merged"
 )
-
+EXCLUDED=(
+  [0]="/.local/share/applications/menu-xdg/"
+)
 
 #-------------------------------------------------------------------------------
 #		/VARIABLES
@@ -84,10 +86,15 @@ start()
     tmp=$(echo "$d" | sed "s/*/$USER/" )
     if [[ -d $tmp ]]; then echo "$tmp"; fi;
   done)
-
+  #
+  EXCLUDES=$(for pattern in "${EXCLUDED[@]}"
+  do
+    echo "-e $pattern"
+  done)
+  #
   $APP_WATCH -d \
-    -e '/.local/share/applications/menu-xdg/' \
     -c "$BUILD_CMD > $CACHE_FILE" \
+    $EXCLUDES \
     $WATCHED > $LOGFILE
 }
 
