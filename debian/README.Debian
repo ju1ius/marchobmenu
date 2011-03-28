@@ -26,7 +26,7 @@ After installing the package:
 $ /usr/lib/marchobmenu/mom-daemon start my-custom-menu
 
 - add the following line to your ~/.config/openbox/menu.xml file
-<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
+<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom-daemon show" />
 
 - you can also add the "Places" pipemenu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
