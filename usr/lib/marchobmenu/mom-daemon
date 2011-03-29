@@ -65,9 +65,9 @@ check_triggers()
   It seems you have dpkg-triggers running for $PKG_NAME
   You must disable them before starting the daemon.
   Run:
-  $ $APP_PATH disable-triggers
+  $ mom-daemon disable-triggers
   Or:
-  $ $APP_PATH --help
+  $ mom-daemon help
   if you want to know more about dpkg-triggers
 _ERROR
     exit 1
@@ -178,16 +178,16 @@ enable_triggers()
 synopsis()
 {
 cat << _USAGE
-$APP_DAEMON - monitors installed applications to generate a an Openbox PipeMenu
+mom-daemon - monitors installed applications to generate a an Openbox PipeMenu
 
 Synopsis
 --------
-$APP_DAEMON help             - Prints the help message and exits
-$APP_DAEMON start            - Starts the menu daemon
-$APP_DAEMON stop             - Stops the menu daemon
-$APP_DAEMON update           - Regenerates the menu
-$APP_DAEMON add-triggers     - Add dpkg-triggers (see mom-daemon help for more infos)
-$APP_DAEMON remove-triggers  - Remove dpkg-triggers (see mom-daemon help for more infos)
+mom-daemon help             - Prints the help message and exits
+mom-daemon start            - Starts the menu daemon
+mom-daemon stop             - Stops the menu daemon
+mom-daemon update           - Regenerates the menu
+mom-daemon enable-triggers  - Add dpkg-triggers (see mom-daemon help for more infos)
+mom-daemon disable-triggers - Remove dpkg-triggers (see mom-daemon help for more infos)
 _USAGE
 }
 
@@ -206,17 +206,17 @@ About dpkg-triggers:
   This is why they are not enabled by default.
 
   If you wish to activate this feature, first stop the daemon:
-  $ $APP_PATH stop
+  $ mom-daemon stop
   Then execute:
-  $ $APP_PATH enable-triggers
+  $ mom-daemon enable-triggers
 
   From now on, if you install a program in a non-standard way,
   like compiling from source, or a wine application,
   you'll need to explicitly update the menu by executing:
-  $ $APP_PATH update
+  $ mom-daemon update
 
   You can deactivate this feature later it by executing:
-  $ $APP_PATH disable-triggers
+  $ mom-daemon disable-triggers
 _USAGE
 
 }

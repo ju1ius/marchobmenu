@@ -20,13 +20,10 @@ It is a python port of the "Places" script from Crunchbang Linux.
 After installing the package:
 
 - add the following line to your ~/.config/openbox/autostart.sh file
-/usr/lib/marchobmenu/mom-daemon start &
-
-- you can specify another menu file as a second parameter
-$ /usr/lib/marchobmenu/mom-daemon start my-custom-menu
+mom-daemon start &
 
 - add the following line to your ~/.config/openbox/menu.xml file
-<menu label="Applications" id="marchobmenu-applications" execute="/usr/lib/marchobmenu/mom.sh" />
+<menu label="Applications" id="marchobmenu-applications" execute="mom-show" />
 
 - you can also add the "Places" pipemenu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
