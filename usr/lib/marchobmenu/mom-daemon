@@ -12,7 +12,7 @@ APP_DAEMON=$(basename $APP_PATH)
 PID=$$
 
 # Needed if script was called with sudo
-USER=$(who am i | sed 's/ .*//')
+USER=$(whoami | sed 's/ .*//')
 HOME=/home/$USER
 
 WDIR="$HOME/.config/openbox/marchobmenu"
