@@ -1,3 +1,10 @@
+marchobmenu (2.0-1) stable; urgency=medium
+
+  * the pipemenu now update properly
+  * fixed logging
+
+ -- Jules Bernable <julius@laforcemolle.org>  Mon, 28 Mar 2011 23:47:00 +0200
+
 marchobmenu (1.4-1) stable; urgency=medium
 
   * mom-daemon: ported monitoring to C code
