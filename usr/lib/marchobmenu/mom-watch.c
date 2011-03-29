@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
+#include <ctype.h>
 #include <inotifytools/inotifytools.h>
 #include <inotifytools/inotify.h>
 
