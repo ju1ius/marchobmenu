@@ -82,7 +82,7 @@ compute_watches()
   do
     tmp=$(echo "$d" | sed "s/*/$USER/" )
     if [[ -d $tmp ]]; then WATCHES="$WATCHES $tmp"; fi;
-  done)
+  done
   # Get excludes patterns
   EXCLUDES=$(for pattern in "${EXCLUDED[@]}"
   do
