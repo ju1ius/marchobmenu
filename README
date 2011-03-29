@@ -9,7 +9,7 @@ http://standards.freedesktop.org/menu-spec/latest/ar01s04.html
 
 Marchobmenu is written in bash and python and only requires the following packages:
 - openbox
-- inotify-tools
+- libinotifytools0
 - python-xdg
 
 There is also a "Places" menu available that will allow you to browse your filesystem from your Openbox menu.

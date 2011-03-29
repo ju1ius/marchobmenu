@@ -21,18 +21,16 @@ build() {
 
   if [ -d $_gitname ] ; then
     cd $_gitname
-    git checkout origin/c-daemon
-    git pull origin c-daemon
+    git pull
     msg "The local files are updated."
   else
     git clone $_gitroot $_gitname
-    git checkout origin/c-daemon
   fi
 
   msg "GIT checkout done or server timeout"
 
   msg "Starting make..."
-  cd "$srcdir/$_gitname/usr/lib/marchobmenu"
+  cd "$srcdir/$_gitname"
   make || return 1
 
   cd "$srcdir/$_gitname"

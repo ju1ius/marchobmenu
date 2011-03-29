@@ -16,7 +16,7 @@ Debian package
 After installing the package:
 
 add the following line to your ~/.config/openbox/menu.xml file
-<menu label="Applications" id="marchobmenu-applications" execute="mom-daemon show" />
+<menu label="Applications" id="marchobmenu-applications" execute="mom-show" />
 
 You can also add the places menu.
 Replace "~" by any directory you want as a starting point, and "thunar" by the file manager of your choice.
