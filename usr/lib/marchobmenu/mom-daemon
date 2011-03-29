@@ -77,10 +77,11 @@ _ERROR
 compute_watches()
 {
   # Get watched directories for the current user
-  WATCHES=$(for d in "${MONITORED[@]}"
+  WATCHES=""
+  for d in "${MONITORED[@]}"
   do
     tmp=$(echo "$d" | sed "s/*/$USER/" )
-    if [[ -d $tmp ]]; then echo "$tmp"; fi;
+    if [[ -d $tmp ]]; then WATCHES="$WATCHES $tmp"; fi;
   done)
   # Get excludes patterns
   EXCLUDES=$(for pattern in "${EXCLUDED[@]}"
@@ -132,9 +133,10 @@ run()
 stop()
 {
   compute_watches
-  pkill -u "$USER" \
-    -f "inotifywait -qmr --format %e %w%f -e create -e delete -e move -e modify $EXCLUDES $WATCHED"
-  pkill -u "$USER" -f "$APP_DAEMON"
+  pkill -u "$USER" -f "inotifywait.*$EXCLUDES.*$WATCHES"
+  #pkill -u "$USER" \
+    #-f "inotifywait -qmr --format %e %w%f -e create -e delete -e move -e modify $EXCLUDES $WATCHED"
+  #pkill -u "$USER" -f "$APP_DAEMON"
   if [[ -f "$PIDFILE" ]] ; then rm "$PIDFILE" ; fi  
 }
 
