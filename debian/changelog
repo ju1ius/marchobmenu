@@ -1,8 +1,9 @@
-marchobmenu (1.5-1) stable; urgency=medium
+marchobmenu (2.0-1) stable; urgency=medium
 
-  * mom-daemon: reverted to bash for portability
+  * the pipemenu now update properly
+  * fixed logging
 
- -- Jules Bernable <julius@laforcemolle.org>  Mon, 28 Mar 2011 32:47:00 +0200
+ -- Jules Bernable <julius@laforcemolle.org>  Mon, 28 Mar 2011 23:47:00 +0200
 
 marchobmenu (1.4-1) stable; urgency=medium
 

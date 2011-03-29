@@ -5,7 +5,7 @@ export prefix=/usr/local
 export sysconfdir=/etc
 
 CC=gcc
-CFLAGS=-W -Wall -pedantic
+CFLAGS=-W -Wall -pedantic -m32
 LDFLAGS=-linotifytools
 EXEC=usr/lib/marchobmenu/mom-watch
 SRC=usr/lib/marchobmenu/mom-watch.c

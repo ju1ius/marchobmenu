@@ -1,6 +1,7 @@
 # Compiled source #
 ###################
 *.pyc
+usr/lib/marchobmenu/mom-watch
 
 # OS generated files #
 ######################

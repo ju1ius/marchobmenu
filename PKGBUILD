@@ -7,7 +7,7 @@ pkgdesc="An Openbox automated XDG Menu"
 arch=('any')
 url="http://github.com/ju1ius/marchobmenu"
 license=('GPL')
-depends=('openbox' 'bash' 'inotify-tools' 'python-xdg>=0.19')
+depends=('openbox' 'bash' 'libinotifytools0' 'python-xdg>=0.19')
 makedepends=('git')
 provides=('marchobmenu')
 conflicts=('marchobmenu')
@@ -20,10 +20,13 @@ build() {
   msg "Connecting to GIT server...."
 
   if [ -d $_gitname ] ; then
-    cd $_gitname && git pull origin
+    cd $_gitname
+    git checkout origin/c-daemon
+    git pull origin c-daemon
     msg "The local files are updated."
   else
     git clone $_gitroot $_gitname
+    git checkout origin/c-daemon
   fi
 
   msg "GIT checkout done or server timeout"
