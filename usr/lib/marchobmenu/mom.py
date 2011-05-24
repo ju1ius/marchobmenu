@@ -29,10 +29,7 @@ def print_exec(entry):
   print '  <item label=%s>' % quoteattr(entry.DesktopEntry.getName().encode('utf-8'))
   cmd = re.sub(' [^ ]*%[fFuUdDnNickvm]', '', entry.DesktopEntry.getExec())
   if entry.DesktopEntry.getTerminal():
-    cmd = 'x-terminal-emulator -e %s' % (
-      entry.DesktopEntry.getName().encode('utf-8'),
-      cmd
-    )
+    cmd = 'x-terminal-emulator -e %s' % (cmd)
   print '    <action name="Execute"><command>%s</command></action>' % escape(cmd)
   print '  </item>'
 
