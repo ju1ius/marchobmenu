@@ -1,3 +1,9 @@
+marchobmenu (1.6-1) stable; urgency=medium
+
+  * fixed github issue #1
+
+ -- Jules Bernable <julius@laforcemolle.org>  Mon, 28 Mar 2011 32:47:00 +0200
+
 marchobmenu (1.5-1) stable; urgency=medium
 
   * mom-daemon: reverted to bash for portability
