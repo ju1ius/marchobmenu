@@ -29,6 +29,7 @@ install:
 	install -m 0755 etc/marchobmenu/* ${sysconfdir}/marchobmenu
 	install -d ${prefix}/bin
 	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon ${prefix}/bin/mom-daemon
+	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon ${prefix}/bin/mom-show
 	ln -s -T ${prefix}/lib/marchobmenu/mom-watch ${prefix}/bin/mom-watch
 
 uninstall:
@@ -37,4 +38,5 @@ uninstall:
 	-rm -rf ${sysconfdir}/marchobmenu
 	-rm -f ${sysconfdir}/xdg/menus/mom-applications.menu
 	-rm -f ${prefix}/bin/mom-daemon
+	-rm -f ${prefix}/bin/mom-show
 	-rm -f ${prefix}/bin/mom-watch
