@@ -1,22 +1,10 @@
 package="marchobmenu"
 version="1.5"
 
-export prefix=/usr/local
+export prefix=/usr
 export sysconfdir=/etc
 
-CC=gcc
-CFLAGS=-W -Wall -pedantic
-LDFLAGS=-linotifytools
-EXEC=usr/lib/marchobmenu/mom-watch
-SRC=usr/lib/marchobmenu/mom-watch.c
-
-mom-watch:
-	${CC} ${SRC} -o ${EXEC} ${LDFLAGS} ${CFLAGS}
-
-.PHONY: clean install uninstall
-
-clean:
-	rm ${EXEC}
+.PHONY: install uninstall
 
 install:
 	install -d ${prefix}/lib/marchobmenu
@@ -29,6 +17,7 @@ install:
 	install -m 0755 etc/marchobmenu/* ${sysconfdir}/marchobmenu
 	install -d ${prefix}/bin
 	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon ${prefix}/bin/mom-daemon
+	ln -s -T ${prefix}/lib/marchobmenu/mom-show ${prefix}/bin/mom-show
 
 uninstall:
 	-rm -rf ${prefix}/lib/marchobmenu
@@ -36,3 +25,4 @@ uninstall:
 	-rm -rf ${sysconfdir}/marchobmenu
 	-rm -f ${sysconfdir}/xdg/menus/mom-applications.menu
 	-rm -f ${prefix}/bin/mom-daemon
+	-rm -f ${prefix}/bin/mom-show
