@@ -1,5 +1,5 @@
 package="marchobmenu"
-version="2.1"
+version="2.2"
 
 export prefix=/usr/local
 export sysconfdir=/etc

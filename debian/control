@@ -11,7 +11,6 @@ Vcs-Browser: http://github.com/ju1ius/marchobmenu
 Package: marchobmenu
 Architecture: amd64
 Depends: openbox, bash, libinotifytools0, python (>= 2.4), python (<< 3), python-xdg
-
 Description: An automated XDG Menu system for Openbox.
   Marchobmenu monitors for newly installed/removed applications, and maintains a pipemenu, listing and categorizing them like the Gnome/Xfce/Lxde menu.
   The package installs a menu file "/etc/xdg/menus/mom-applications.menu",
