@@ -4,7 +4,7 @@
 <Menu>
 
 	<Name>Applications</Name>
-	<Directory>ob-menu-applications.directory</Directory>
+	<Directory>mom-menu-applications.directory</Directory>
 
 	<!--
   Read standard .directory and .desktop file locations
@@ -21,7 +21,7 @@
 	<!-- Accessories submenu -->
 	<Menu>
 		<Name>Accessories</Name>
-		<Directory>ob-utility.directory</Directory>
+		<Directory>mom-utility.directory</Directory>
 		<Include>
 			<And>
 				<Category>Utility</Category>
@@ -42,7 +42,7 @@
 	<!-- Accessibility submenu -->
 	<Menu>
 		<Name>Universal Access</Name>
-		<Directory>ob-utility-accessibility.directory</Directory>
+		<Directory>mom-utility-accessibility.directory</Directory>
 		<Include>
 			<And>
 				<Category>Accessibility</Category>
@@ -54,7 +54,7 @@
 	<!-- Education -->
 	<Menu>
 		<Name>Education</Name>
-		<Directory>ob-education.directory</Directory>
+		<Directory>mom-education.directory</Directory>
 		<Include>
 			<And>
 				<Category>Education</Category>
@@ -65,7 +65,7 @@
 		<!-- Office -->
 	<Menu>
 		<Name>Office</Name>
-		<Directory>ob-office.directory</Directory>
+		<Directory>mom-office.directory</Directory>
 		<Include>
 			<And>
 				<Category>Office</Category>
@@ -76,7 +76,7 @@
 	<!-- Games -->
 	<Menu>
 		<Name>Games</Name>
-		<Directory>ob-game.directory</Directory>
+		<Directory>mom-game.directory</Directory>
 		<Include>
 			<And>
 				<Category>Game</Category>
@@ -87,7 +87,7 @@
 	<!-- Graphics -->
 	<Menu>
 		<Name>Graphics</Name>
-		<Directory>ob-graphics.directory</Directory>
+		<Directory>mom-graphics.directory</Directory>
 		<Include>
 			<And>
 				<Category>Graphics</Category>
@@ -99,7 +99,7 @@
 	<!-- Internet -->
 	<Menu>
 		<Name>Internet</Name>
-		<Directory>ob-network.directory</Directory>
+		<Directory>mom-network.directory</Directory>
 		<Include>
 			<And>
 				<Category>Network</Category>
@@ -110,7 +110,7 @@
 	<!-- Multimedia -->
 	<Menu>
 		<Name>Multimedia</Name>
-		<Directory>ob-audio-video.directory</Directory>
+		<Directory>mom-audio-video.directory</Directory>
 		<Include>
 			<And>
 				<Category>AudioVideo</Category>
@@ -121,7 +121,7 @@
 	<!-- Development Tools -->
 	<Menu>
 		<Name>Development</Name>
-		<Directory>ob-development.directory</Directory>
+		<Directory>mom-development.directory</Directory>
 		<Include>
 			<And>
 				<Category>Development</Category>
@@ -134,7 +134,7 @@
 	<!-- System Tools-->
 	<Menu>
 		<Name>System</Name>
-		<Directory>ob-system-tools.directory</Directory>
+		<Directory>mom-system-tools.directory</Directory>
 		<Include>
 			<And>
 				<Category>System</Category>
@@ -144,7 +144,7 @@
 
 	<Menu>
 		<Name>DesktopSettings</Name>
-		<Directory>ob-settings.directory</Directory>
+		<Directory>mom-settings.directory</Directory>
 		<OnlyUnallocated/>
 		<Include>
 			<Or>
@@ -164,7 +164,7 @@
 	<!-- Other -->
 	<Menu>
 		<Name>Other</Name>
-		<Directory>ob-other.directory</Directory>
+		<Directory>mom-other.directory</Directory>
 		<OnlyUnallocated/>
 		<Include>
 			<And>
