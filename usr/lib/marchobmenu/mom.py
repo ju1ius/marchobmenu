@@ -52,25 +52,10 @@ def print_menu(menu):
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
 
-  config = ConfigParser.RawConfigParser()
-  config.readfp(StringIO.StringIO(
-"""
-[Menu]
-filename: mom-applications.menu
-"""))
-  config.read([
-    '/etc/marchobmenu/menu.conf',
-    os.path.expanduser('~/.config/openbox/marchobmenu/menu.conf')
-  ])
-
-  filename = config.get('Menu', 'filename')
-  if not filename.endswith('.menu'):
-    filename += '.menu'
-
   filter_debian = os.path.isfile('/usr/bin/update-menus')
 
   xdg.Config.setWindowManager('openbox')
-  menu = xdg.Menu.parse(filename)
+  menu = xdg.Menu.parse('mom-applications.menu')
 
   print '<?xml version="1.0" encoding="UTF-8"?>'
   print '<openbox_pipe_menu>'
