@@ -8,6 +8,7 @@ set -u
 APP_PATH=$(readlink -f $0)
 APP_DIR=$(dirname $APP_PATH)
 APP_DAEMON=$(basename $APP_PATH)
+APP_WATCH="$APP_DIR/mom-watch"
 
 PID=$$
 
