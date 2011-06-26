@@ -66,9 +66,9 @@ check_triggers()
   It seems you have dpkg-triggers running for $PKG_NAME
   You must disable them before starting the daemon.
   Run:
-  $ mom-daemon disable-triggers
+  $ $APP_DAEMON disable-triggers
   Or:
-  $ mom-daemon help
+  $ $APP_DAEMON help
   if you want to know more about dpkg-triggers
 _ERROR
     exit 1
@@ -145,16 +145,16 @@ enable_triggers()
 synopsis()
 {
 cat << _USAGE
-mom-daemon - monitors installed applications to generate a an Openbox PipeMenu
+$APP_DAEMON - monitors installed applications to generate a an Openbox PipeMenu
 
 Synopsis
 --------
-mom-daemon help             - Prints the help message and exits
-mom-daemon start            - Starts the menu daemon
-mom-daemon stop             - Stops the menu daemon
-mom-daemon update           - Regenerates the menu
-mom-daemon enable-triggers  - Add dpkg-triggers (see mom-daemon help for more infos)
-mom-daemon disable-triggers - Remove dpkg-triggers (see mom-daemon help for more infos)
+$APP_DAEMON help             - Prints the help message and exits
+$APP_DAEMON start            - Starts the menu daemon
+$APP_DAEMON stop             - Stops the menu daemon
+$APP_DAEMON update           - Regenerates the menu
+$APP_DAEMON enable-triggers  - Add dpkg-triggers (see $APP_DAEMON help for more infos)
+$APP_DAEMON disable-triggers - Remove dpkg-triggers (see $APP_DAEMON help for more infos)
 _USAGE
 }
 
@@ -173,17 +173,17 @@ About dpkg-triggers:
   This is why they are not enabled by default.
 
   If you wish to activate this feature, first stop the daemon:
-  $ mom-daemon stop
+  $ $APP_DAEMON stop
   Then execute:
-  $ mom-daemon enable-triggers
+  $ $APP_DAEMON enable-triggers
 
   From now on, if you install a program in a non-standard way,
   like compiling from source, or a wine application,
   you'll need to explicitly update the menu by executing:
-  $ mom-daemon update
+  $ $APP_DAEMON update
 
   You can deactivate this feature later it by executing:
-  $ mom-daemon disable-triggers
+  $ $APP_DAEMON disable-triggers
 _USAGE
 
 }
