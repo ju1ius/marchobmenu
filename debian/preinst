@@ -16,10 +16,7 @@ set -e
 
 case "$1" in
     install|upgrade)
-      if which mom-daemon > /dev/null
-      then
-        mom-daemon stop
-      fi
+      pkill marchobmenud
     ;;
     abort-upgrade)
 

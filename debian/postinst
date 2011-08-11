@@ -21,12 +21,10 @@ set -e
 case "$1" in
     # This is triggered by any installation of a desktop entry
     triggered)
-      #echo DEBUG: processing trigger "'$2'"
       mom-daemon update
     ;;
 
     configure|abort-upgrade|abort-remove|abort-deconfigure)
-      mom-daemon start
     ;;
 
     *)

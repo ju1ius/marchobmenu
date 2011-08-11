@@ -19,10 +19,7 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-      if which mom-daemon > /dev/null
-      then
-        mom-daemon stop
-      fi
+      pkill marchobmenud
     ;;
     failed-upgrade)
 
