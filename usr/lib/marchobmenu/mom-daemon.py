@@ -54,7 +54,7 @@ EXCLUDED = [
 def start(opts):
     """starts the daemon"""
     stop()
-    update(opts)
+    update()
     cmd = [APP_WATCH, '--daemon',
         '--apps-command', '"%s update"' % APP_DAEMON
     ]
