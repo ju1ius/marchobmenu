@@ -1,7 +1,7 @@
 # Compiled source #
 ###################
 *.pyc
-usr/bin/*
+usr/bin/marchobmenud
 
 # OS generated files #
 ######################
