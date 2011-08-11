@@ -7,10 +7,10 @@ export sysconfdir=/etc
 CC=gcc
 CFLAGS=-W -Wall -pedantic
 LDFLAGS=-linotifytools
-EXEC=usr/lib/marchobmenu/mom-watch
-SRC=usr/lib/marchobmenu/mom-watch.c
+EXEC=usr/bin/marchobmenud
+SRC=src/marchobmenud.c
 
-mom-watch:
+marchobmenud:
 	${CC} ${SRC} -o ${EXEC} ${LDFLAGS} ${CFLAGS}
 
 .PHONY: clean install uninstall
@@ -28,15 +28,17 @@ install:
 	install -d ${sysconfdir}/marchobmenu
 	install -m 0755 etc/marchobmenu/* ${sysconfdir}/marchobmenu
 	install -d ${prefix}/bin
-	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon ${prefix}/bin/mom-daemon
-	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon ${prefix}/bin/mom-show
-	ln -s -T ${prefix}/lib/marchobmenu/mom-watch ${prefix}/bin/mom-watch
+	install -m 0755 usr/bin/* ${prefix}/bin
+	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon.py ${prefix}/bin/mom-daemon
+	ln -s -T ${prefix}/lib/marchobmenu/mom-places.py ${prefix}/bin/mom-places
+	ln -s -T ${prefix}/lib/marchobmenu/mom-bookmarks.py ${prefix}/bin/mom-bookmarks
 
 uninstall:
 	-rm -rf ${prefix}/lib/marchobmenu
 	-rm -rf ${prefix}/share/desktop-directories/mom-*.directory
 	-rm -rf ${sysconfdir}/marchobmenu
 	-rm -f ${sysconfdir}/xdg/menus/mom-applications.menu
+	-rm -f ${prefix}/bin/marchobmenud
 	-rm -f ${prefix}/bin/mom-daemon
-	-rm -f ${prefix}/bin/mom-show
-	-rm -f ${prefix}/bin/mom-watch
+	-rm -f ${prefix}/bin/mom-places
+	-rm -f ${prefix}/bin/mom-bookmarks
