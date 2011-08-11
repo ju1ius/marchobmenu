@@ -18,7 +18,7 @@
   <!--<DirectoryDir>/usr/share/desktop-directories</DirectoryDir>-->
 
 	<!-- Read in overrides and child menus from applications-merged/ -->
-	<DefaultMergeDirs/>
+  <DefaultMergeDirs/>
 
 	<!-- Accessories submenu -->
 	<Menu>

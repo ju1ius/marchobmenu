@@ -23,7 +23,7 @@ files: gtk-file
 """
 
     def __init__(self):
-        xdg.Config.setWindowManager('Openbox')
+        xdg.Config.setWindowManager('openbox')
         cache_dir = os.path.expanduser('~/.cache/marchobmenu')
         if not os.path.isdir(cache_dir):
             os.makedirs(cache_dir)
@@ -99,7 +99,7 @@ files: gtk-file
       return """<?xml version="1.0" encoding="UTF-8"?>
 <openbox_pipe_menu>
 
-%s
+  %s
 </openbox_pipe_menu>""" % content
 
     def format_separator(self, indent):

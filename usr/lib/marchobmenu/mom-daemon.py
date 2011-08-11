@@ -10,7 +10,7 @@ APP_DAEMON = "mom-daemon"
 APP_WATCH = "marchobmenud"
 PKG_NAME = "marchobmenu"
 TRIGGERS_DB = "/var/lib/dpkg/triggers/File"
-MENU_FILE = "mom-applications.menu"
+MENU_FILE = "fxm-applications.menu"
 
 CACHE_DIR = os.path.expanduser('~/.cache/%s' % PKG_NAME)
 if not os.path.isdir(CACHE_DIR):
@@ -253,6 +253,8 @@ About dpkg-triggers:
         start(options)
     elif command == 'stop':
         stop()
+    elif command == 'show':
+        show()
     elif command == 'update':
         if options.progress:
             zenity_progress(command)

@@ -29,9 +29,9 @@ install:
 	install -m 0755 etc/marchobmenu/* ${sysconfdir}/marchobmenu
 	install -d ${prefix}/bin
 	install -m 0755 usr/bin/* ${prefix}/bin
-	ln -s -T ${prefix}/lib/marchobmenu/mom-daemon.py ${prefix}/bin/mom-daemon
-	ln -s -T ${prefix}/lib/marchobmenu/mom-places.py ${prefix}/bin/mom-places
-	ln -s -T ${prefix}/lib/marchobmenu/mom-bookmarks.py ${prefix}/bin/mom-bookmarks
+	ln -sf -T ${prefix}/lib/marchobmenu/mom-daemon.py ${prefix}/bin/mom-daemon
+	ln -sf -T ${prefix}/lib/marchobmenu/mom-places.py ${prefix}/bin/mom-places
+	ln -sf -T ${prefix}/lib/marchobmenu/mom-bookmarks.py ${prefix}/bin/mom-bookmarks
 
 uninstall:
 	-rm -rf ${prefix}/lib/marchobmenu
