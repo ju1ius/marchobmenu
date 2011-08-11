@@ -9,16 +9,16 @@ Vcs-Git: git://github.com/ju1ius/marchobmenu.git
 Vcs-Browser: http://github.com/ju1ius/marchobmenu
 
 Package: marchobmenu
-Architecture: amd64
-Depends: openbox, bash, libinotifytools0, python (>= 2.4), python (<< 3), python-xdg
+Architecture: any
+Depends: openbox, libinotifytools0, python-gtk2, python-xdg
 Description: An automated XDG Menu system for Openbox.
-  Marchobmenu monitors for newly installed/removed applications, and maintains a pipemenu, listing and categorizing them like the Gnome/Xfce/Lxde menu.
-  The package installs a menu file "/etc/xdg/menus/mom-applications.menu",
-  which allows you to configure the menu as you see fit.
-  For infos about editing the menu file, see:
-  http://standards.freedesktop.org/menu-spec/latest/ar01s04.html
+  Marchobmenu monitors for newly installed/removed applications,
+  and maintains a pipemenu, listing and categorizing them like the Gnome/Xfce/Lxde menu.
+  For help, see http://github.com/ju1ius/marchobmenu/wiki
   Features:
     * Auto generates and auto updates an Openbox "Applications" pipemenu in compliance with www.freedesktop.org standards thereby giving a familiar menu.
     * Support for localizations: the menu generated will be in the system default language where available.
+    * Support for icons: starting with Openbox 3.5
     * Auto generates and auto updates a "Places" pipemenu allowing you to browse your filesystem from the Openbox menu.
+    * Auto generates and auto updates a "Bookmarks" pipemenu listing your GTK Bookmarks in the Openbox menu.
 

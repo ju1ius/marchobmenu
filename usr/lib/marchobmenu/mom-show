@@ -1,7 +1,0 @@
-#! /bin/bash
-
-# Workaround a strange openbox behavior:
-# using "mom-daemon show" in the rootmenu
-# seems to cause openbox to cache the output...
-
-cat $HOME/.config/openbox/marchobmenu/menu.cache

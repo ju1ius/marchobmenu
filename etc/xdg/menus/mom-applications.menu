@@ -6,14 +6,16 @@
 	<Name>Applications</Name>
 	<Directory>mom-menu-applications.directory</Directory>
 
-	<!--
-  Read standard .directory and .desktop file locations
+  <!-- Scan legacy dirs first, as later items take priority -->
+  <LegacyDir>/etc/X11/applnk</LegacyDir>
+  <LegacyDir>/usr/share/gnome/apps</LegacyDir>
+
+  <!-- Read standard .directory and .desktop file locations -->
   <DefaultAppDirs/>
   <DefaultDirectoryDirs/>
-  -->
   <!-- Read only provided .directory and .desktop file locations -->
-  <AppDir>/usr/share/applications</AppDir>
-  <DirectoryDir>/usr/share/desktop-directories</DirectoryDir>
+  <!--<AppDir>/usr/share/applications</AppDir>-->
+  <!--<DirectoryDir>/usr/share/desktop-directories</DirectoryDir>-->
 
 	<!-- Read in overrides and child menus from applications-merged/ -->
 	<DefaultMergeDirs/>
@@ -133,55 +135,60 @@
 
 	<!-- System Tools-->
 	<Menu>
-		<Name>System</Name>
-		<Directory>mom-system-tools.directory</Directory>
-		<Include>
-			<And>
-				<Category>System</Category>
-			</And>
-		</Include>
+		<Name>SystemTools</Name>
+    <Directory>mom-system-tools.directory</Directory>
+    <Include>
+      <And>
+        <Category>System</Category>
+        <Not><Category>Settings</Category></Not>
+      </And>
+    </Include>
 	</Menu>	 <!-- End System Tools -->
 
 	<Menu>
 		<Name>DesktopSettings</Name>
 		<Directory>mom-settings.directory</Directory>
-		<OnlyUnallocated/>
-		<Include>
-			<Or>
-				<Category>Settings</Category>
-				<Category>DesktopSettings</Category>
-				<Category>PackageManager</Category>
-				<Category>System</Category>
-			</Or>
-		</Include>
-		<Layout>
-			<Merge type="menus"/>
-			<Merge type="files"/>
-		</Layout>
-
+    <Include>
+      <And>
+        <Or>
+          <Category>Settings</Category>
+				  <Category>DesktopSettings</Category>
+        </Or>
+        <Not>
+          <Or>
+            <Category>System</Category>
+            <Filename>gnomecc.desktop</Filename>
+          </Or>
+        </Not>
+      </And>
+    </Include>
 	</Menu> <!-- End Settings -->
+
+
+  <!-- System Settings -->
+  <Menu>
+    <Name>SystemSettings</Name>
+    <Directory>mom-settings-system.directory</Directory>
+    <Include>
+      <And>
+        <Category>Settings</Category>
+        <Category>System</Category>
+      </And>
+    </Include>
+  </Menu>     <!-- End System Settings -->
 
 	<!-- Other -->
 	<Menu>
 		<Name>Other</Name>
 		<Directory>mom-other.directory</Directory>
 		<OnlyUnallocated/>
-		<Include>
-			<And>
-				<Not><Category>Core</Category></Not>
-				<Not><Category>Settings</Category></Not>
-				<Not><Category>DesktopSettings</Category></Not>
-				<Not><Category>Screensaver</Category></Not>
-			</And>
-		</Include>
-		<Exclude>
-			<And>
-				<Category>Core</Category>
-				<Category>Settings</Category>
-				<Category>DesktopSettings</Category>
-				<Category>Screensaver</Category>
-			</And>
-		</Exclude>
+    <Include>
+      <And>
+        <Not><Category>Core</Category></Not>
+        <Not><Category>Settings</Category></Not>
+        <Not><Category>Screensaver</Category></Not>
+      </And>
+    </Include>
 	</Menu> <!-- End Other -->
 
 
@@ -189,9 +196,8 @@
 		<Merge type="files"/>
 		<Merge type="menus"/>
 		<Separator/>
-		<Menuname>System</Menuname>
 		<Menuname>DesktopSettings</Menuname>
+		<Menuname>SystemSettings</Menuname>
 	</Layout>
 
 </Menu> <!-- End Applications -->
-

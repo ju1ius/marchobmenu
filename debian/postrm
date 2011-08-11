@@ -20,12 +20,11 @@ set -e
 
 case "$1" in
     purge)
-      rm -r $HOME/.config/openbox/marchobmenu
+      mom-daemon stop
     ;;
-
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+      mom-daemon stop
     ;;
-
     *)
         echo "postrm called with unknown argument \`$1'" >&2
         exit 1

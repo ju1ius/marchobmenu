@@ -22,11 +22,11 @@ case "$1" in
     # This is triggered by any installation of a desktop entry
     triggered)
       #echo DEBUG: processing trigger "'$2'"
-      /usr/lib/marchobmenu/mom-daemon update
+      mom-daemon update
     ;;
 
     configure|abort-upgrade|abort-remove|abort-deconfigure)
-      /usr/lib/marchobmenu/mom-daemon update
+      mom-daemon update
     ;;
 
     *)

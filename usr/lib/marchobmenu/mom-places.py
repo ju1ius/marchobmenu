@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # coding=utf-8
 
-import os, sys, platform
+import os, sys
 from xml.sax.saxutils import escape, quoteattr
-
+import marchobmenu
 
 def sort_ci(inlist, minisort=True):
   """
-  Case insensitive sorting
+  Case insensitive sorting)
   If minisort=False, sort_ci will not sort sets of entries
   for which entry1.lower() == entry2.lower()
   i.e. sort_ci(['fish', 'FISH', 'fIsh'], False)
@@ -52,89 +52,60 @@ def sorted_listdir(path, show_files=True):
   return files
 
 
-script_path = __file__
+class PlacesMenu(marchobmenu.ApplicationsMenu):
 
-path = os.path.abspath(os.path.expanduser(sys.argv[1]))
-file_manager = sys.argv[2]
-
-# TODO: check if every file manager can actually
-# open files with their associated application...
-
-open_cmd = file_manager
-
-# ... or else we might need this...
-#open_commands = [
-    #'exo-open', 'kde-open', 'gvfs-open', 'gnome-open', 'xdg-open'        
-#]
-
-#if len(sys.argv) > 2:
-    #file_manager = sys.argv[2]
-    #if file_manager in open_commands:
-        #open_cmd = file_manager
-    #elif file_manager.lower() == 'thunar':
-        #open_cmd = 'exo-open'
-    #elif file_manager.lower() == 'nautilus':
-        #open_cmd = 'gnome-open'
-
-#if len(sys.argv) > 3:
-    #open_cmd = sys.argv[3]
-
-#if open_cmd is None:
-    #for cmd in open_commands:
-        #if os.path.isfile(os.path.join('/usr/bin', cmd)):
-            #open_cmd = cmd
-            #break;
-
-#if file_manager is None:
-    #file_manager = open_cmd
-
-if len(sys.argv) > 3 and sys.argv[3] in ['false', 'off', 'no']:
-    show_files = False
-else:
-    show_files = True
-
-files = sorted_listdir(path, show_files)
-
-print '<openbox_pipe_menu>'
-
-# "Browse here..." lauches this dir
-print """<item label="Browse Here..">
-  <action name="Execute">
-    <execute>%s "%s"</execute>
-  </action>
-</item>
-<separator />""" % (
-  escape(file_manager),
-  escape(path)
-)
+    def parse_config(self):
+        super(PlacesMenu, self).parse_config()
+        self.file_manager = self.config.get("Menu", "filemanager")
+        self.show_files = self.config.getboolean("Places", "show_files")
+        self.folder_icon = self.config.get("Icons", "folders")
+        self.file_icon = self.config.get("Icons", "files")
+    
+    def parse_path(self, path):
+        if self.show_icons:
+            self.open_cache()
+            folder_icon = quoteattr( self.find_icon(self.folder_icon) )
+            file_icon = quoteattr( self.find_icon(self.file_icon) )
+            self.close_cache()
+        else:
+            folder_icon = ''
+            file_icon = ''
+        fm = self.file_manager
+        output = []
+        append = output.append
+        append(
+"""<?xml version="1.0" encoding="UTF-8"?>
+<openbox_pipe_menu>
+  <item label="Browse Here.." icon=%s >
+    <action name="Execute">
+      <execute>%s "%s"</execute>
+    </action>
+  </item>
+  <separator />""" % (folder_icon, escape(fm), escape(path))
+        )
+        files = sorted_listdir(path, self.show_files)
+        for filename in files:
+            filepath = os.path.join(path, filename)
+            if filename.startswith('.') or filename.endswith('~'):
+                continue
+            if os.path.isfile(filepath):
+                item = """  <item label=%s icon=%s>
+    <action name="Execute">
+      <execute>%s %s</execute>)
+    </action>"
+  </item>""" % (quoteattr(filename), file_icon, fm, escape(filepath))
+            else:
+                item = "  <menu id=%s label=%s icon=%s execute=%s />" % (
+                    quoteattr(filepath), quoteattr(filename), folder_icon,
+                    quoteattr( "%s '%s'" % (sys.argv[0], escape(filepath)) )
+                )
+            append(item)
+        append('</openbox_pipe_menu>')
+        return "\n".join(output)
 
 
-for filename in files:
-  filepath = os.path.join(path, filename)
 
-  if filename.startswith('.') or filename.endswith('~'): continue
-
-  if os.path.isfile(filepath):
-    print """<item label=%s>
-  <action name="Execute">
-    <execute>%s %s</execute>
-  </action>"
-</item>""" % (
-      quoteattr(filename),
-      open_cmd,
-      escape(filepath)
-    )
-  else:
-    print "<menu id=%s label=%s execute=%s />" % (
-      quoteattr(filepath),
-      quoteattr(filename),
-      quoteattr(
-        script_path + " "
-        + filepath.replace(' ', '\ ') + " "
-        + file_manager
-      )
-    )
-
-
-print '</openbox_pipe_menu>'
-
+if __name__ == "__main__":
+    path = os.path.abspath(os.path.expanduser(sys.argv[1]))
+    menu = PlacesMenu()
+    print menu.parse_path(path)
