@@ -4,7 +4,7 @@ marchobmenu (3.0-1) stable; urgency=medium
   * New Gtk Bookmarks pipemenu
   * Heavy optimisations and refactoring
 
- -- Jules Bernable <julius@laforcemolle.org>  Thu, 11 Zug 2011 02:30:00 +0200
+ -- Jules Bernable <julius@laforcemolle.org>  Thu, 11 Aug 2011 06:00:00 +0200
  
 marchobmenu (2.2-1) stable; urgency=medium
 
