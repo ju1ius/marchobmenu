@@ -26,7 +26,7 @@ case "$1" in
     ;;
 
     configure|abort-upgrade|abort-remove|abort-deconfigure)
-      mom-daemon update
+      mom-daemon start
     ;;
 
     *)
