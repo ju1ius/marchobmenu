@@ -11,6 +11,7 @@ EXEC=usr/bin/marchobmenud
 SRC=src/marchobmenud.c
 
 marchobmenud:
+	mkdir -p usr/bin
 	${CC} ${SRC} -o ${EXEC} ${LDFLAGS} ${CFLAGS}
 
 .PHONY: clean install uninstall
