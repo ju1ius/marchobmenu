@@ -16,7 +16,10 @@ set -e
 
 case "$1" in
     install|upgrade)
-      pkill marchobmenud
+      if pgrep marchobmenud > /dev/null
+      then
+        pkill marchobmenud
+      fi
     ;;
     abort-upgrade)
 

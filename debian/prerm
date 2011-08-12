@@ -19,7 +19,10 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-      pkill marchobmenud
+      if pgrep marchobmenud > /dev/null
+      then
+        pkill marchobmenud
+      fi
     ;;
     failed-upgrade)
 
