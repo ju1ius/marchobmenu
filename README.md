@@ -11,10 +11,12 @@ It aims to be fast and lightweight:
     in order to consume even less resources.
 
 
-Also available are two pipemenus:
+Also available are three pipemenus:
 
 * mom-bookmarks: browse the filesystem from your Openbox menu
 * mom-places: list GTK Bookmarks in your Openbox menu
+* mom-places: list GTK Bookmarks in your Openbox menu
+* mom-recently-used: list your recently used files in the Openbox menu.
 
 
 For help, please [Check the wiki] (http://github.com/ju1ius/marchobmenu/wiki)
@@ -26,6 +28,5 @@ Marchobmenu is inspired by:
 * [xdg-menu] (http://cvs.fedoraproject.org/viewvc/devel/openbox/xdg-menu)
 * [mint-fm2] (http://packages.linuxmint.com/pool/main/m/mint-fm2/)
 
-The "Places" script is a python port of
-Kacper Wysocki's obpipemenu-places for [Crunchbang Linux](http://www.crunchbanglinux.org)
-
+The "mom-places" script is a python port of Kacper Wysocki's obpipemenu-places for [Crunchbang Linux](http://www.crunchbanglinux.org)
+The "mom-recently-used script" is inspired by johnraff's [pipemenu](http://crunchbanglinux.org/forums/topic/10231/recently-opened-files-pipe-menu/)
