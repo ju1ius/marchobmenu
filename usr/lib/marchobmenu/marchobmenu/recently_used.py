@@ -27,6 +27,7 @@ class RecentlyUsedMenu(base.Menu):
         tree = ElementTree.parse(source)
         last_index = - (self.max_items -1)
         bookmarks = tree.findall('/bookmark')[last_index:-1]
+        bookmarks.reverse()
         output = map(self.parse_item, bookmarks)
         output.extend([
             self.format_separator('  '),
