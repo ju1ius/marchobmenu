@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import os, sys, re, subprocess, optparse
-import marchobmenu
+import marchobmenu.applications
 
 ################################################################################
 #		CONSTANTS
@@ -78,7 +78,7 @@ def stop():
 
 def update():
     """updates the menu"""
-    menu = marchobmenu.ApplicationsMenu()
+    menu = marchobmenu.applications.ApplicationsMenu()
     with open(MENU_CACHE, 'w+') as fp:
         fp.write(menu.parse_menu_file(MENU_FILE))
 

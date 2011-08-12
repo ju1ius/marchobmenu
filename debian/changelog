@@ -1,3 +1,10 @@
+marchobmenu (3.1-1) stable; urgency=medium
+
+  * New Recently Used pipemenu
+  * more optimisations and refactoring
+
+ -- Jules Bernable <julius@laforcemolle.org>  Fri, 12 Aug 2011 18:50:54 +0200
+
 marchobmenu (3.0-1) stable; urgency=medium
 
   * Icons support

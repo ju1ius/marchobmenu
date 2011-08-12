@@ -1,9 +1,8 @@
 import os, sys, stat, re, StringIO, sqlite3, ConfigParser
 from xml.sax.saxutils import escape, quoteattr
-import xdg.Config, xdg.BaseDirectory, xdg.DesktopEntry, xdg.Menu, xdg.IconTheme
-#from xdg.Exceptions import *
+import xdg.IconTheme
 
-class ApplicationsMenu(object):
+class Menu(object):
 
     default_config = """
 [Menu]
@@ -11,6 +10,8 @@ filemanager: thunar
 terminal: x-terminal-emulator -T '%(title)s' -e '%(command)s'
 [Places]
 show_files: yes
+[Recently Used]
+max_items: 20
 [Icons]
 show: yes
 use_gtk_theme: yes
@@ -23,12 +24,17 @@ files: gtk-file
 """
 
     def __init__(self):
-        xdg.Config.setWindowManager('openbox')
         cache_dir = os.path.expanduser('~/.cache/marchobmenu')
         if not os.path.isdir(cache_dir):
             os.makedirs(cache_dir)
-        self.filter_debian = os.path.isfile('/usr/bin/update-menus')
         self.parse_config()
+        self.exe_regex = re.compile(r' [^ ]*%[fFuUdDnNickvm]')
+        if self.show_icons:
+            self.open_cache()
+
+    def __del__(self):
+        if self.show_icons:
+            self.close_cache
 
     def parse_config(self):
         self.config = ConfigParser.RawConfigParser()
@@ -37,8 +43,6 @@ files: gtk-file
             '/etc/marchobmenu/menu.conf',
             os.path.expanduser('~/.config/marchobmenu/menu.conf')
         ])
-
-        self.terminal_emulator = self.config.get('Menu', 'terminal')
 
         self.show_icons = self.config.getboolean('Icons', 'show')
         if self.show_icons:
@@ -58,16 +62,6 @@ files: gtk-file
             else:
                 self.theme = self.config.get('Icons','theme')
 
-    def parse_menu_file(self, menu_file):
-        if self.show_icons:
-            self.open_cache()
-        menu = xdg.Menu.parse(menu_file)
-        output = self.menu_entry(menu)
-        output = self.format_menu(output)
-        if self.show_icons:
-            self.close_cache()
-        return output
-
     def open_cache(self):
         db_file = os.path.expanduser('~/.cache/marchobmenu/icons.db')
         if not os.path.isfile(db_file):
@@ -83,77 +77,41 @@ files: gtk-file
         self.cache_conn.commit()
         self.cache_cursor.close()
     
-    def menu_entry(self, menu, level=0):
-        output = []
-        append = output.append
-        for entry in menu.getEntries():
-            if isinstance(entry, xdg.Menu.Separator):
-                append( self.separator(entry, level) )
-            elif isinstance(entry, xdg.Menu.Menu):
-                append( self.submenu(entry, level) )
-            elif isinstance(entry, xdg.Menu.MenuEntry):
-                append( self.application(entry, level) )
-        return "".join(output)
-
     def format_menu(self, content):
       return """<?xml version="1.0" encoding="UTF-8"?>
-<openbox_pipe_menu>
+<openbox_pipe_menu>\n%s</openbox_pipe_menu>""" % content
 
-  %s
-</openbox_pipe_menu>""" % content
+    def format_text_item(self, txt):
+        return "<item label=%s />\n" % quoteattr(txt)
 
-    def format_separator(self, indent):
+    def format_separator(self, indent=''):
         return "%s<separator/>\n" % indent
 
-    def format_application(self, name, cmd, icon, indent):
+    def format_application(self, name, cmd, icon, indent=''):
         return """%(i)s<item label=%(n)s icon=%(icn)s>
-    %(i)s  <action name='Execute'>
-    %(i)s    <command>%(c)s</command>
-    %(i)s  </action>
-    %(i)s</item>
-    """ % {
+%(i)s  <action name='Execute'>
+%(i)s    <command>%(c)s</command>
+%(i)s  </action>
+%(i)s</item>
+""" % {
             "i": indent, "n": quoteattr(name), "icn": quoteattr(icon),
             "c": escape(cmd)
         }
 
-    def format_submenu(self, id, name, icon, submenu, indent):
+    def format_submenu(self, id, name, icon, submenu, indent=''):
         return """%(i)s<menu id=%(id)s label=%(n)s icon=%(icn)s>
-    %(sub)s%(i)s</menu>
-    """ % {
+  %(sub)s%(i)s</menu>
+""" % {
             "i": indent, "id": quoteattr(id), "n": quoteattr(name),
             "icn": quoteattr(icon), "sub": submenu
         }
 
-    def separator(self, entry, level):
-        indent = "  " * level
-        return self.format_separator(indent)
+    def format_exec_menu(self, id, label, cmd, icon, indent=''):
+        return "%(i)s<menu id=%(id)s label=%(n)s execute=%(cmd)s icon=%(icn)s/>\n" % {
+            "i": indent, "id": quoteattr(id), "n": quoteattr(label),
+            "cmd": quoteattr(cmd), "icn": quoteattr(icon)
+        }
 
-    def submenu(self, entry, level):
-        id = entry.Name.encode('utf-8')
-        name = entry.getName().encode('utf-8')
-        icon = self.find_icon(entry.getIcon().encode('utf-8')) if self.show_icons else ''
-        submenu = self.menu_entry(entry, level+1)
-        indent = "  " * level
-        return self.format_submenu(id, name, icon, submenu, indent)
-
-    def application(self, entry, level):
-        de = entry.DesktopEntry
-        # Skip Debian specific menu entries
-        if self.filter_debian and de.get('Categories', list=False).startswith('X-Debian'):
-            return
-        # Escape entry name
-        name = de.getName().encode('utf-8')
-        # Strip command arguments
-        cmd = re.sub(' [^ ]*%[fFuUdDnNickvm]', '', de.getExec())
-        if de.getTerminal():
-            cmd = self.terminal_emulator % {"title": name, "command": cmd}
-        # Get icon
-        icon = self.find_icon(de.getIcon().encode('utf-8')) if self.show_icons else ''
-
-        indent = "  " * level
-        return self.format_application(name, cmd, icon, indent)
-
-  
     def find_icon(self, name):
         """Finds and cache icons"""
         if not name:

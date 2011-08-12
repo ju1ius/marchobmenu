@@ -1,5 +1,5 @@
 package="marchobmenu"
-version="2.2"
+version="3.1"
 
 export prefix=/usr/local
 export sysconfdir=/etc
@@ -20,8 +20,9 @@ clean:
 	rm ${EXEC}
 
 install:
-	install -d ${prefix}/lib/marchobmenu
-	install -m 0755 usr/lib/marchobmenu/* ${prefix}/lib/marchobmenu
+	install -d ${prefix}/lib/marchobmenu/marchobmenu
+	install -m 0755 usr/lib/marchobmenu/marchobmenu/*.py ${prefix}/lib/marchobmenu/marchobmenu
+	install -m 0755 usr/lib/marchobmenu/*.py ${prefix}/lib/marchobmenu
 	install -d ${prefix}/share/desktop-directories
 	install -m 0755 usr/share/desktop-directories/* ${prefix}/share/desktop-directories
 	install -d ${sysconfdir}/xdg/menus
@@ -33,6 +34,7 @@ install:
 	ln -sf -T ${prefix}/lib/marchobmenu/mom-daemon.py ${prefix}/bin/mom-daemon
 	ln -sf -T ${prefix}/lib/marchobmenu/mom-places.py ${prefix}/bin/mom-places
 	ln -sf -T ${prefix}/lib/marchobmenu/mom-bookmarks.py ${prefix}/bin/mom-bookmarks
+	ln -sf -T ${prefix}/lib/marchobmenu/mom-recently-used.py ${prefix}/bin/mom-recently-used
 
 uninstall:
 	-rm -rf ${prefix}/lib/marchobmenu

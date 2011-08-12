@@ -19,6 +19,8 @@ Description: An automated XDG Menu system for Openbox.
     * Auto generates and auto updates an Openbox "Applications" pipemenu in compliance with www.freedesktop.org standards thereby giving a familiar menu.
     * Support for localizations: the menu generated will be in the system default language where available.
     * Support for icons: starting with Openbox 3.5
-    * Auto generates and auto updates a "Places" pipemenu allowing you to browse your filesystem from the Openbox menu.
-    * Auto generates and auto updates a "Bookmarks" pipemenu listing your GTK Bookmarks in the Openbox menu.
+  Extras:
+    * "Places" pipemenu: browse your filesystem from the Openbox menu.
+    * "Bookmarks" pipemenu: list your GTK Bookmarks in the Openbox menu.
+    * "Recently Used" pipemenu: list your recently used files in the Openbox menu.
 
