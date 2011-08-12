@@ -28,5 +28,6 @@ Marchobmenu is inspired by:
 * [xdg-menu] (http://cvs.fedoraproject.org/viewvc/devel/openbox/xdg-menu)
 * [mint-fm2] (http://packages.linuxmint.com/pool/main/m/mint-fm2/)
 
-The "mom-places" script is a python port of Kacper Wysocki's obpipemenu-places for [Crunchbang Linux](http://www.crunchbanglinux.org)
-The "mom-recently-used script" is inspired by johnraff's [pipemenu](http://crunchbanglinux.org/forums/topic/10231/recently-opened-files-pipe-menu/)
+The "mom-places" script is a python port of Kacper Wysocki's obpipemenu-places for [Crunchbang Linux](http://www.crunchbanglinux.org).
+
+The "mom-recently-used script" is inspired by johnraff's [pipemenu](http://crunchbanglinux.org/forums/topic/10231/recently-opened-files-pipe-menu/).
