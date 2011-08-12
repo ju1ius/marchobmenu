@@ -20,6 +20,7 @@ case "$1" in
       then
         pkill marchobmenud
       fi
+      exit 0
     ;;
     abort-upgrade)
 
